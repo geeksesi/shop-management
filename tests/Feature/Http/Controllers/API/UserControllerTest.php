@@ -176,7 +176,7 @@ class UserControllerTest extends TestCase
         ];
 
         $this->postJson(route('user.login'), $login_info)
-            ->assertUnauthorized();
+            ->assertNotFound();
     }
 
     public  function testAsGuestItCanNotLoinWithCorrectUsernameAndWrongPassword(){
@@ -196,7 +196,7 @@ class UserControllerTest extends TestCase
         ];
 
         $this->postJson(route('user.login'), $login_info)
-            ->assertNotFound();
+            ->assertUnauthorized();
     }
 
 }
