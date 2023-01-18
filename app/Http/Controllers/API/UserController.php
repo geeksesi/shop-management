@@ -26,14 +26,14 @@ class UserController extends Controller
     public function login(LoginRequest $request)
     {
         $data = $request->validated();
-        $user = User::where("username", $data["username"])->get();
+        $user = User::where("username", $data["username"])->first();
 
-        # empty($user) doesn't work!
-        if (count($user) == 0){
+        if (empty($user)){
             return response()->json("user doesn't exist.", 404);
         }
-        else if(password_verify($data["password"], $user[0]["password"])){
-            return response()->json($user);
+        else if(password_verify($data["password"], $user["password"])){
+            $token = $user->createToken('api_token');
+            return AuthenticationResource::make($token);
         }
         else{
             return response()->json("Password Incorrect!", 401);
