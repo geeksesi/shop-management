@@ -119,4 +119,84 @@ class UserControllerTest extends TestCase
             'password' => $payload['password'],
         ]);
     }
+
+    public function testAsGuestItCanLoginWithInValidUsernameFormat(){
+        $login_info = [
+            'username' => "",
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertInvalid(['username']);
+    }
+
+    public function testAsGuestItCanLoginWithInValidPasswordFormat(){
+        $login_info = [
+            'password' => "",
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertInvalid(['password']);
+    }
+    public function testAsGuestItCanLoginWithCorrectUserNameAndPassword(){
+        $payload = [
+            'name' => "Mohammad Javad",
+            'family' => "Ghasemy",
+            'email' => "geeksesi@gmail.com",
+            'password' => "passowrd",
+            'username' => "geeksesi",
+            'phone_number' => "09100101543",
+        ];
+
+        $this->postJson(route('user.register'), $payload);
+
+        $login_info = [
+            'username' => "geeksesi",
+            'password' => "passowrd",
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertSuccessful();
+    }
+
+    public function testAsGuestItCanNotLoginWithUserNameThatDoesNotExist(){
+        $payload = [
+            'name' => "Mohammad Javad",
+            'family' => "Ghasemy",
+            'email' => "geeksesi@gmail.com",
+            'password' => "passowrd",
+            'username' => "geeksesi",
+            'phone_number' => "09100101543",
+        ];
+
+        $this->postJson(route('user.register'), $payload);
+
+        $login_info = [
+            'username' => "Abbas",
+            'password' => "passowrd",
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertUnauthorized();
+    }
+
+    public  function testAsGuestItCanNotLoinWithCorrectUsernameAndWrongPassword(){
+        $payload = [
+            'name' => "Mohammad Javad",
+            'family' => "Ghasemy",
+            'email' => "geeksesi@gmail.com",
+            'password' => "passowrd",
+            'username' => "geeksesi",
+            'phone_number' => "09100101543",
+        ];
+        $this->postJson(route('user.register'), $payload);
+
+        $login_info = [
+            'username' => "geeksesi",
+            'password' => "12345678",
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertNotFound();
+    }
+
 }
