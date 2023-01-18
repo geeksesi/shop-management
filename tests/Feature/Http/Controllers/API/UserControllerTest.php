@@ -199,4 +199,30 @@ class UserControllerTest extends TestCase
             ->assertUnauthorized();
     }
 
+    public function testAsUserLoggedItCanGetInfoOnAPIUser(){
+        $payload = [
+            'name' => "Mohammad Javad",
+            'family' => "Ghasemy",
+            'email' => "geeksesi@gmail.com",
+            'password' => "passowrd",
+            'username' => "geeksesi",
+            'phone_number' => "09100101543",
+        ];
+        $info = $this->postJson(route('user.register'), $payload);
+        $token = $info['data']['token'];
+
+        $this->getJson('api/user', ['Authorization' => 'Bearer ' . $token])
+            ->assertSuccessful();
+
+    }
+
+    public function testAsUserLoggedItCanNotGetInfoOnAPIUserWithWrongToken(){
+
+        $token = " ";
+
+        $this->getJson('api/user', ['Authorization' => 'Bearer ' . $token])
+            ->assertUnauthorized();
+
+    }
+
 }
