@@ -11,17 +11,18 @@ return new class extends Migration
      *
      * @return void
      */
-
-    #TODO check columns with Category Document #17 in github
     public function up()
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->text('meta_description')->nullable();
+            $table->id();
             $table->timestamps();
-            $table->softDeletes();
+            $table->string("title");
+            $table->text("description");
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
+
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

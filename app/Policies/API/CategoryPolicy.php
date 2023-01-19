@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Policies\API;
 
 use App\Models\Category;
 use App\Models\User;
@@ -18,7 +18,7 @@ class CategoryPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class CategoryPolicy
      */
     public function view(User $user, Category $category)
     {
-        //
+        return true;
     }
 
     /**
@@ -41,7 +41,7 @@ class CategoryPolicy
      */
     public function create(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class CategoryPolicy
      */
     public function update(User $user, Category $category)
     {
-        //
+        return $user->id == $category->user()->id;
     }
 
     /**
@@ -65,7 +65,7 @@ class CategoryPolicy
      */
     public function delete(User $user, Category $category)
     {
-        //
+        return $user->id == $category->user()->id;
     }
 
     /**
@@ -77,7 +77,7 @@ class CategoryPolicy
      */
     public function restore(User $user, Category $category)
     {
-        //
+        return $user->id == $category->user()->id;
     }
 
     /**
@@ -89,6 +89,6 @@ class CategoryPolicy
      */
     public function forceDelete(User $user, Category $category)
     {
-        //
+        return $user->id == $category->user()->id;
     }
 }

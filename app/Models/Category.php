@@ -1,27 +1,36 @@
 <?php
 
-namespace App;
-#TODO Check namespace
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+    protected $fillable = [
+        "title" ,
+        "description" ,
+        "parent_id" ,
+    ];
 
-    #TODO Read about guard and fillable
-    protected $guarded = ['name','meta_description','slug'];
 
-    #TODO we dont need create method
-    public static function create(array $array)
+    #Relations
+    public function parent(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
+        return $this->belongsTo(Category::class , "parent_id");
     }
-
-    public function articles()
+    public function children(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->belongsToMany(Article::class);
+        return $this->hasMany(Category::class , "parent_id");
     }
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    #TODO After Product model
+    /*public function products()
+    {
+        return $this->hasMany(Product::class);
+    }*/
 }
