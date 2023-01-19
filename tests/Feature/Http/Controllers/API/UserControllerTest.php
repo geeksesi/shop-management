@@ -151,7 +151,7 @@ class UserControllerTest extends TestCase
     }
 
     public function testAsGuestItCanNotLoginWithUserNameThatDoesNotExist(){
-
+        # 'password' => "passowrd", 'username' => "geeksesi"
         $this->registerAUser();
 
         $login_info = [
@@ -164,7 +164,7 @@ class UserControllerTest extends TestCase
     }
 
     public  function testAsGuestItCanNotLoinWithCorrectUsernameAndWrongPassword(){
-
+        # 'password' => "passowrd", 'username' => "geeksesi"
         $this->registerAUser();
 
         $login_info = [
@@ -177,17 +177,10 @@ class UserControllerTest extends TestCase
     }
 
     public function testAsUserRegisteredItCanGetInfoOnAPIUser(){
-        $payload = [
-            'name' => "Mohammad Javad",
-            'family' => "Ghasemy",
-            'email' => "geeksesi@gmail.com",
-            'password' => "passowrd",
-            'username' => "geeksesi",
-            'phone_number' => "09100101543",
-        ];
-        $info = $this->postJson(route('user.register'), $payload);
+        # 'password' => "passowrd", 'username' => "geeksesi"
+        $register_data = $this->registerAUser();
 
-        $token = $info['data']['token'];
+        $token = $register_data['data']['token'];
 
         $this->getJson('api/user', ['Authorization' => 'Bearer ' . $token])
             ->assertSuccessful();
@@ -195,7 +188,7 @@ class UserControllerTest extends TestCase
     }
 
     public function testAsUserLoggedItCanGetInfoOnAPIUser(){
-
+        # 'password' => "passowrd", 'username' => "geeksesi"
         $this->registerAUser();
 
         $login_info = [
@@ -231,7 +224,7 @@ class UserControllerTest extends TestCase
             'phone_number' => "09100101543",
         ];
 
-        $this->postJson(route('user.register'), $payload);
+        return $this->postJson(route('user.register'), $payload);
     }
 
 }
