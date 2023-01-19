@@ -199,7 +199,7 @@ class UserControllerTest extends TestCase
             ->assertUnauthorized();
     }
 
-    public function testAsUserLoggedItCanGetInfoOnAPIUser(){
+    public function testAsUserRegisteredItCanGetInfoOnAPIUser(){
         $payload = [
             'name' => "Mohammad Javad",
             'family' => "Ghasemy",
@@ -209,6 +209,7 @@ class UserControllerTest extends TestCase
             'phone_number' => "09100101543",
         ];
         $info = $this->postJson(route('user.register'), $payload);
+
         $token = $info['data']['token'];
 
         $this->getJson('api/user', ['Authorization' => 'Bearer ' . $token])
@@ -216,7 +217,32 @@ class UserControllerTest extends TestCase
 
     }
 
-    public function testAsUserLoggedItCanNotGetInfoOnAPIUserWithWrongToken(){
+    public function testAsUserLoggedItCanGetInfoOnAPIUser(){
+        $payload = [
+            'name' => "Mohammad Javad",
+            'family' => "Ghasemy",
+            'email' => "geeksesi@gmail.com",
+            'password' => "passowrd",
+            'username' => "geeksesi",
+            'phone_number' => "09100101543",
+        ];
+        $this->postJson(route('user.register'), $payload);
+
+        $login_info = [
+            'username' => "geeksesi",
+            'password' => "passowrd",
+        ];
+
+        $info = $this->postJson(route('user.login'), $login_info);
+
+        $token = $info['data']['token'];
+
+        $this->getJson('api/user', ['Authorization' => 'Bearer ' . $token])
+            ->assertSuccessful();
+
+    }
+
+    public function testAsGuestItCanNotGetInfoOnAPIUserWithWrongToken(){
 
         $token = " ";
 
