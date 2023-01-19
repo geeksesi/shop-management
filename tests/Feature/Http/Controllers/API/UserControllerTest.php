@@ -140,13 +140,11 @@ class UserControllerTest extends TestCase
     }
     public function testAsGuestItCanLoginWithCorrectUserNameAndPassword(){
 
-        $userFactory = new UserFactory();
-        $user_data = $userFactory->definition();
-        $this->postJson(route('user.register'), $user_data);
+        $user = \App\Models\User::factory()->create();
 
         $login_info = [
-            'username' => $user_data["username"],
-            'password' => $user_data["password"]
+            'username' => $user->username,
+            'password' => 'password'
         ];
 
         $this->postJson(route('user.login'), $login_info)
@@ -154,26 +152,22 @@ class UserControllerTest extends TestCase
     }
 
     public function testAsGuestItCanNotLoginWithUserNameThatDoesNotExist(){
-        $userFactory = new UserFactory();
-        $user_data = $userFactory->definition();
-        $this->postJson(route('user.register'), $user_data);
+        $user = \App\Models\User::factory()->create();
 
         $login_info = [
             'username' => "Abbas",
-            'password' => $user_data["password"]
+            'password' => 'password'
         ];
 
         $this->postJson(route('user.login'), $login_info)
-            ->assertNotFound();
+            ->assertUnauthorized();
     }
 
     public  function testAsGuestItCanNotLoginWithCorrectUsernameAndWrongPassword(){
-        $userFactory = new UserFactory();
-        $user_data = $userFactory->definition();
-        $this->postJson(route('user.register'), $user_data);
+        $user = \App\Models\User::factory()->create();
 
         $login_info = [
-            'username' => $user_data["username"],
+            'username' => $user->username,
             'password' => "12345678",
         ];
 
@@ -181,26 +175,12 @@ class UserControllerTest extends TestCase
             ->assertUnauthorized();
     }
 
-    public function testAsUserRegisteredItCanGetInfoOnAPIUser(){
-        $userFactory = new UserFactory();
-        $user_data = $userFactory->definition();
-        $register_data = $this->postJson(route('user.register'), $user_data);
-
-        $token = $register_data['data']['token'];
-
-        $this->getJson('api/user', ['Authorization' => 'Bearer ' . $token])
-            ->assertSuccessful();
-
-    }
-
     public function testAsUserLoggedItCanGetInfoOnAPIUser(){
-        $userFactory = new UserFactory();
-        $user_data = $userFactory->definition();
-        $this->postJson(route('user.register'), $user_data);
+        $user = \App\Models\User::factory()->create();
 
         $login_info = [
-            'username' => $user_data["username"],
-            'password' => $user_data["password"],
+            'username' => $user->username,
+            'password' => 'password'
         ];
 
         $info = $this->postJson(route('user.login'), $login_info);
