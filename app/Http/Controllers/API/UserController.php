@@ -8,6 +8,7 @@ use App\Http\Requests\API\UserController\RegisterRequest;
 use App\Http\Resources\AuthenticationResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -25,19 +26,18 @@ class UserController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $data = $request->validated();
-        $user = User::where("username", $data["username"])->first();
+        $credentials = $request->validate([
+            'username' => ['required', 'string'],
+            'password' => ['required', 'string' , 'min:8'],
+        ]);
+        $user = User::where("username", $credentials["username"])->first();
 
-        if (empty($user)){
-            return response()->json("user doesn't exist.", 404);
-        }
-        else if(password_verify($data["password"], $user["password"])){
+        if (Auth::attempt($credentials)){
             $token = $user->createToken('api_token');
             return AuthenticationResource::make($token);
         }
-        else{
-            return response()->json("Password Incorrect!", 401);
-        }
+
+        return response()->json()->setStatusCode(404);
 
     }
 }
