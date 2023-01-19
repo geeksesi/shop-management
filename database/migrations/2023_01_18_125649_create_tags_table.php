@@ -11,6 +11,7 @@ return new class extends Migration
      *
      * @return void
      */
+    #TODO we dont need this for now
     public function up()
     {
         Schema::create('tags', function (Blueprint $table) {

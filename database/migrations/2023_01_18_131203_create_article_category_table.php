@@ -10,6 +10,7 @@ return new class extends Migration {
      *
      * @return void
      */
+    #TODO we dont need this table
     public function up()
     {
         Schema::create('article_category', function (Blueprint $table) {

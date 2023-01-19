@@ -11,6 +11,8 @@ return new class extends Migration
      *
      * @return void
      */
+
+    #TODO check columns with Category Document #17 in github
     public function up()
     {
         Schema::create('categories', function (Blueprint $table) {
