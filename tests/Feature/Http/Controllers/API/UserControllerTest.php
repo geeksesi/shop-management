@@ -120,7 +120,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    public function testAsGuestItCanLoginWithInValidUsernameFormat(){
+    public function testAsGuestItCanNotLoginWithInValidUsernameFormat(){
         $login_info = [
             'username' => "",
         ];
@@ -129,7 +129,7 @@ class UserControllerTest extends TestCase
             ->assertInvalid(['username']);
     }
 
-    public function testAsGuestItCanLoginWithInValidPasswordFormat(){
+    public function testAsGuestItCanNotLoginWithInValidPasswordFormat(){
         $login_info = [
             'password' => "",
         ];
@@ -163,7 +163,7 @@ class UserControllerTest extends TestCase
             ->assertNotFound();
     }
 
-    public  function testAsGuestItCanNotLoinWithCorrectUsernameAndWrongPassword(){
+    public  function testAsGuestItCanNotLoginWithCorrectUsernameAndWrongPassword(){
         # 'password' => "passowrd", 'username' => "geeksesi"
         $this->registerAUser();
 
