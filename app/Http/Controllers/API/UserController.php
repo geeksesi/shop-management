@@ -7,6 +7,7 @@ use App\Http\Requests\API\UserController\LoginRequest;
 use App\Http\Requests\API\UserController\RegisterRequest;
 use App\Http\Resources\AuthenticationResource;
 use App\Models\User;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,7 +25,7 @@ class UserController extends Controller
         return AuthenticationResource::make($token);
     }
 
-    public function login(LoginRequest $request)
+    public function login(Request $request)
     {
         $credentials = $request->validate([
             'username' => ['required', 'string'],
@@ -37,7 +38,7 @@ class UserController extends Controller
             return AuthenticationResource::make($token);
         }
 
-        return response()->json()->setStatusCode(404);
+        throw new AuthenticationException();
 
     }
 }
