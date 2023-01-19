@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\API;
 
+use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -139,11 +140,13 @@ class UserControllerTest extends TestCase
     }
     public function testAsGuestItCanLoginWithCorrectUserNameAndPassword(){
 
-        $this->registerAUser();
+        $userFactory = new UserFactory();
+        $user_data = $userFactory->definition();
+        $this->postJson(route('user.register'), $user_data);
 
         $login_info = [
-            'username' => "geeksesi",
-            'password' => "passowrd",
+            'username' => $user_data["username"],
+            'password' => $user_data["password"]
         ];
 
         $this->postJson(route('user.login'), $login_info)
@@ -151,12 +154,13 @@ class UserControllerTest extends TestCase
     }
 
     public function testAsGuestItCanNotLoginWithUserNameThatDoesNotExist(){
-        # 'password' => "passowrd", 'username' => "geeksesi"
-        $this->registerAUser();
+        $userFactory = new UserFactory();
+        $user_data = $userFactory->definition();
+        $this->postJson(route('user.register'), $user_data);
 
         $login_info = [
             'username' => "Abbas",
-            'password' => "passowrd",
+            'password' => $user_data["password"]
         ];
 
         $this->postJson(route('user.login'), $login_info)
@@ -164,11 +168,12 @@ class UserControllerTest extends TestCase
     }
 
     public  function testAsGuestItCanNotLoginWithCorrectUsernameAndWrongPassword(){
-        # 'password' => "passowrd", 'username' => "geeksesi"
-        $this->registerAUser();
+        $userFactory = new UserFactory();
+        $user_data = $userFactory->definition();
+        $this->postJson(route('user.register'), $user_data);
 
         $login_info = [
-            'username' => "geeksesi",
+            'username' => $user_data["username"],
             'password' => "12345678",
         ];
 
@@ -177,8 +182,9 @@ class UserControllerTest extends TestCase
     }
 
     public function testAsUserRegisteredItCanGetInfoOnAPIUser(){
-        # 'password' => "passowrd", 'username' => "geeksesi"
-        $register_data = $this->registerAUser();
+        $userFactory = new UserFactory();
+        $user_data = $userFactory->definition();
+        $register_data = $this->postJson(route('user.register'), $user_data);
 
         $token = $register_data['data']['token'];
 
@@ -188,12 +194,13 @@ class UserControllerTest extends TestCase
     }
 
     public function testAsUserLoggedItCanGetInfoOnAPIUser(){
-        # 'password' => "passowrd", 'username' => "geeksesi"
-        $this->registerAUser();
+        $userFactory = new UserFactory();
+        $user_data = $userFactory->definition();
+        $this->postJson(route('user.register'), $user_data);
 
         $login_info = [
-            'username' => "geeksesi",
-            'password' => "passowrd",
+            'username' => $user_data["username"],
+            'password' => $user_data["password"],
         ];
 
         $info = $this->postJson(route('user.login'), $login_info);
@@ -212,19 +219,6 @@ class UserControllerTest extends TestCase
         $this->getJson('api/user', ['Authorization' => 'Bearer ' . $token])
             ->assertUnauthorized();
 
-    }
-
-    public function registerAUser(){
-        $payload = [
-            'name' => "Mohammad Javad",
-            'family' => "Ghasemy",
-            'email' => "geeksesi@gmail.com",
-            'password' => "passowrd",
-            'username' => "geeksesi",
-            'phone_number' => "09100101543",
-        ];
-
-        return $this->postJson(route('user.register'), $payload);
     }
 
 }
