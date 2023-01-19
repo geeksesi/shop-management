@@ -16,10 +16,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->text('meta_description')->nullable();
+            $table->increments('id')->primary();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->foreignId('parent_id');
             $table->timestamps();
             $table->softDeletes();
         });

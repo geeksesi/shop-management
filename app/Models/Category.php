@@ -1,27 +1,27 @@
 <?php
 
-namespace App;
-#TODO Check namespace
+namespace App\Models;
 
+use Database\Factories\CategoryFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory,SoftDeletes;
 
     #TODO Read about guard and fillable
-    protected $guarded = ['name','meta_description','slug'];
+    protected $fillable = ['title','id','description','parent_id'];
 
-    #TODO we dont need create method
-    public static function create(array $array)
+    protected static function newFactory(): Factory
     {
+        return CategoryFactory::new();
     }
 
-    public function articles()
+/*    public function articles()
     {
         return $this->belongsToMany(Article::class);
-    }
+    }*/
 }
