@@ -8,7 +8,6 @@ use App\Http\Requests\API\UserController\RegisterRequest;
 use App\Http\Resources\AuthenticationResource;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -25,12 +24,10 @@ class UserController extends Controller
         return AuthenticationResource::make($token);
     }
 
-    public function login(Request $request)
+
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'username' => ['required', 'string'],
-            'password' => ['required', 'string' , 'min:8'],
-        ]);
+        $credentials = $request->validated();
         $user = User::where("username", $credentials["username"])->first();
 
         if (Auth::attempt($credentials)){
