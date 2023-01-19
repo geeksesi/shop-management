@@ -21,4 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/user/register', [App\Http\Controllers\API\UserController::class, 'register'])->name('user.register');
 
 Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'login'])->name('user.login')
-    ->middleware('throttle:api');
+    ->middleware('throttle:login');
