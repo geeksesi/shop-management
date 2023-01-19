@@ -16,8 +16,11 @@ class CategoryFactory extends Factory
      */
     public function definition()
     {
+        $user = \App\Models\User::factory()->create();
         return [
-            //
+            "title" => fake()->title(),
+            "description" => fake()->text(),
+            "user_id" => $user->id ,
         ];
     }
 }

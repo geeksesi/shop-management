@@ -22,3 +22,7 @@ Route::post('/user/register', [App\Http\Controllers\API\UserController::class, '
 
 Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'login'])->name('user.login')
     ->middleware('throttle:login');
+
+
+Route::apiResource("category" , \App\Http\Controllers\API\CategoryController::class)
+    ->middleware('auth:sanctum');
