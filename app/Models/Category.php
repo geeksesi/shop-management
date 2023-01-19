@@ -2,26 +2,34 @@
 
 namespace App\Models;
 
-use Database\Factories\CategoryFactory;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory;
+    protected $fillable = [
+        "title" ,
+        "description" ,
+        "parent_id" ,
+    ];
 
-    #TODO Read about guard and fillable
-    protected $fillable = ['title','id','description','parent_id'];
 
-    protected static function newFactory(): Factory
+    #Relations
+    public function parent(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return CategoryFactory::new();
+        return $this->belongsTo(Category::class , "parent_id");
     }
-
-/*    public function articles()
+    public function children(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->belongsToMany(Article::class);
+        return $this->hasMany(Category::class , "parent_id");
+    }
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    /*public function products()
+    {
+        return $this->hasMany(Product::class);
     }*/
 }
