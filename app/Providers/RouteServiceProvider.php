@@ -50,7 +50,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('login', function (Request $request) {
-            return (new Limit('login', 5, 30))->by($request->user()?->id ?: $request->ip());
+            return (new Limit('login', 60, 30))->by($request->user()?->id ?: $request->ip());
         });
     }
 }

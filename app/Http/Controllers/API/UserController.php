@@ -25,12 +25,9 @@ class UserController extends Controller
         return AuthenticationResource::make($token);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'username' => ['required', 'string'],
-            'password' => ['required', 'string' , 'min:8'],
-        ]);
+        $credentials = $request->validated();
         $user = User::where("username", $credentials["username"])->first();
 
         if (Auth::attempt($credentials)){
