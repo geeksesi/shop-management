@@ -19,3 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/user/register', [App\Http\Controllers\API\UserController::class, 'register'])->name('user.register');
+
+/*---------------products------------*/
+/*Route::middleware('auth:sanctum')->group(function (){*/
+Route::prefix('v1')->group(function () {
+    Route::apiResource('products', \App\Http\Controllers\API\v1\ProductController::class);
+});
+/*});*/
