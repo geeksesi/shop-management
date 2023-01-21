@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\API;
 
+use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -119,4 +120,85 @@ class UserControllerTest extends TestCase
             'password' => $payload['password'],
         ]);
     }
+
+    public function testAsGuestItCanNotLoginWithInValidUsernameFormat(){
+        $login_info = [
+            'username' => "",
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertInvalid(['username']);
+    }
+
+    public function testAsGuestItCanNotLoginWithInValidPasswordFormat(){
+        $login_info = [
+            'password' => "",
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertInvalid(['password']);
+    }
+    public function testAsGuestItCanLoginWithCorrectUserNameAndPassword(){
+
+        $user = \App\Models\User::factory()->create();
+
+        $login_info = [
+            'username' => $user->username,
+            'password' => 'password'
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertSuccessful();
+    }
+
+    public function testAsGuestItCanNotLoginWithUserNameThatDoesNotExist(){
+        $user = \App\Models\User::factory()->create();
+
+        $login_info = [
+            'username' => "Abbas",
+            'password' => 'password'
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertUnauthorized();
+    }
+
+    public  function testAsGuestItCanNotLoginWithCorrectUsernameAndWrongPassword(){
+        $user = \App\Models\User::factory()->create();
+
+        $login_info = [
+            'username' => $user->username,
+            'password' => "12345678",
+        ];
+
+        $this->postJson(route('user.login'), $login_info)
+            ->assertUnauthorized();
+    }
+
+    public function testAsUserLoggedItCanGetInfoOnAPIUser(){
+        $user = \App\Models\User::factory()->create();
+
+        $login_info = [
+            'username' => $user->username,
+            'password' => 'password'
+        ];
+
+        $info = $this->postJson(route('user.login'), $login_info);
+
+        $token = $info['data']['token'];
+
+        $this->getJson('api/user', ['Authorization' => 'Bearer ' . $token])
+            ->assertSuccessful();
+
+    }
+
+    public function testAsGuestItCanNotGetInfoOnAPIUserWithWrongToken(){
+
+        $token = " ";
+
+        $this->getJson('api/user', ['Authorization' => 'Bearer ' . $token])
+            ->assertUnauthorized();
+
+    }
+
 }

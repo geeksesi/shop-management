@@ -20,6 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/user/register', [App\Http\Controllers\API\UserController::class, 'register'])->name('user.register');
 
+Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'login'])->name('user.login')
+    ->middleware('throttle:login');
+
 /*---------------products------------*/
 /*Route::middleware('auth:sanctum')->group(function (){*/
 Route::prefix('v1')->group(function () {
