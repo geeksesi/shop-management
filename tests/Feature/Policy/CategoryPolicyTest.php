@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Policy;
 
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -10,26 +10,19 @@ use Tests\TestCase;
 class CategoryPolicyTest extends TestCase
 {
     use WithFaker;
+    use RefreshDatabase;
 
     public function testCategoryHasChildrenShouldNotBeDeleted()
     {
         $category = Category::factory()->create();
-        $categoryId = $category->id;
         $payload = [
             'title' => $this->faker->title(),
             'description' => $this->faker->text(),
-            "parent_id" => $categoryId ,
+            "parent_id" => $category->id ,
         ];
         Category::create($payload);
-        $category->delete();
-
-        #TODO I dont know what I must Do
-        if (is_null(Category::find($categoryId))) {
-
-        }
-
-
-
+        $user = \App\Models\User::factory()->create();
+        $this->assertTrue($user->cannot('delete' , $category));
 
     }
     public function testCategoryHasNotChildrenShouldBeDeleted()
@@ -40,12 +33,9 @@ class CategoryPolicyTest extends TestCase
             "parent_id" => null ,
         ];
         $category = Category::create($payload);
-        $categoryId = $category->id;
-        $category->delete();
-        #TODO I dont know what I must Do
-        if (is_null(Category::find($categoryId))) {
-
-        }
+        $user = \App\Models\User::factory()->create();
+        $this->assertTrue($user->can('delete' , $category));
 
     }
 }
+
