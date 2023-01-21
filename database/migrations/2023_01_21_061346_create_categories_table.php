@@ -18,7 +18,6 @@ return new class extends Migration
             $table->timestamps();
             $table->string("title");
             $table->text("description");
-
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('cascade');
         });
