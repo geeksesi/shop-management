@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Requests\API\UserController;
+namespace App\Http\Requests\CategoryController;
+
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class CategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -12,7 +13,7 @@ class LoginRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -23,8 +24,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => ['string', 'required'],
-            'password' => ['string', 'required', 'min:8']
+            //
         ];
     }
 }
