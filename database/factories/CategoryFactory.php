@@ -20,7 +20,8 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'title'
+            'title' => fake()->title,
+            'description'=> fake()->text,
         ];
     }
 }

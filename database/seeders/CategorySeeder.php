@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Category;
+use App\Models\Category;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,7 +18,11 @@ class CategorySeeder extends Seeder
         $categories=['News','Opinion','Tutorial','Review'];
         foreach ($categories as $category)
         {
-            Category::create(['name'=>$category]);
+            Category::create([
+                'title '=>$category,
+                'description' => 'توضیحات '.$category,
+
+            ]);
         }
     }
 }
