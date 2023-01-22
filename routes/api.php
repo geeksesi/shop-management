@@ -24,8 +24,4 @@ Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'logi
     ->middleware('throttle:login');
 
 /*---------------products------------*/
-/*Route::middleware('auth:sanctum')->group(function (){*/
-Route::prefix('v1')->group(function () {
-    Route::apiResource('products', \App\Http\Controllers\API\v1\ProductController::class);
-});
-/*});*/
+    Route::apiResource('products', \App\Http\Controllers\API\ProductController::class);

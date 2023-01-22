@@ -29,9 +29,7 @@ class UpdateProductRequest extends FormRequest
             'creator' => ['required','exists:users,id'],
             'description' => ['required'],
             'quantity' => ['nullable','integer'],
-            'weight' => ['nullable'],
             'price' => ['nullable'],
-            'sale_price' => ['nullable'],
             'type' => ['required','string'],
         ];
     }

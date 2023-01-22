@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\API\v1;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests\API\ProductController\StoreProductRequest;
 use App\Http\Requests\API\ProductController\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
@@ -20,16 +19,19 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
+        /*
+         * to do
+         * category_id => category resource
+         * creator => user resource
+         * */
         $product = Product::create([
             'name' => $request->name,
             'description' => $request->description,
             'type' => $request->type,
             'quantity' => $request->quantity,
-            'weight' => $request->weight,
             'creator' => $request->creator,
             'category_id' => $request->category_id,
             'price' => $request->price,
-            'sale_price' => $request->sale_price,
 
         ]);
         return response()->json([
@@ -50,11 +52,9 @@ class ProductController extends Controller
             'description' => $request->description,
             'type' => $request->type,
             'quantity' => $request->quantity,
-            'weight' => $request->weight,
             'creator' => $request->creator,
             'category_id' => $request->category_id,
             'price' => $request->price,
-            'sale_price' => $request->sale_price,
 
         ]);
         return response()->json([

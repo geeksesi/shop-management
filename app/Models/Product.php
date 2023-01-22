@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProductTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,9 +12,11 @@ class Product extends Model
     protected $table = 'products';
     protected $fillable = [
         'category_id', 'name', 'description', 'quantity',
-        'weight', 'price', 'sale_price','creator','type'
+        'price', 'creator','type'
     ];
-
+    protected $casts = [
+        'type' => ProductTypeEnum::class
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\API\ProductController;
 
+use App\Enums\ProductTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreProductRequest extends FormRequest
 {
@@ -29,10 +31,8 @@ class StoreProductRequest extends FormRequest
             'creator' => ['required','exists:users,id'],
             'description' => ['required'],
             'quantity' => ['nullable','integer'],
-            'weight' => ['nullable'],
             'price' => ['nullable'],
-            'sale_price' => ['nullable'],
-            'type' => ['required','string'],
+            'type' => ['required','string',new Enum(ProductTypeEnum::class)],
         ];
     }
 }
