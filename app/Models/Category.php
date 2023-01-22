@@ -16,8 +16,8 @@ class Category extends Model
         "parent_id" ,
     ];
 
-
     #Relations
+    #TODO Relation with Product (After the product model is made)
     public function parent(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Category::class , "parent_id");
