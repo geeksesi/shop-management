@@ -39,17 +39,20 @@ class CategoryController extends Controller
             "categories" => new CategoryCollection($this->getCategoryInTree()) ,
         ] , 201);
     }
-
     /**
      * Update the specified resource in storage.
      *
      * @param CategoryRequest $request
      * @param \App\Models\Category $category
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(CategoryRequest $request, Category $category)
     {
-        //
+        Category::update($request->validated());
+        $this->getCategoryInTree()->update($category,$request);
+        return response()->json([
+            "categories"=>new CategoryCollection($this->getCategoryInTree()),
+        ],201);
     }
 
     /**
