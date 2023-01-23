@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    private function getCategoryInTree()
+    {
+        return Category::whereNull("parent_id")->with("children")->latest()->get();
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,9 +21,8 @@ class CategoryController extends Controller
      */
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $categories = Category::whereNull("parent_id")->latest()->get();
         return response()->json([
-            "categories" => new CategoryCollection($categories) ,
+            "categories" => new CategoryCollection($this->getCategoryInTree()) ,
         ] , 200);
     }
 
@@ -32,9 +35,8 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request): \Illuminate\Http\JsonResponse
     {
         Category::create($request->validated());
-        $categories = Category::whereNull("parent_id")->latest()->get();
         return response()->json([
-            "categories" => new CategoryCollection($categories) ,
+            "categories" => new CategoryCollection($this->getCategoryInTree()) ,
         ] , 201);
     }
 
