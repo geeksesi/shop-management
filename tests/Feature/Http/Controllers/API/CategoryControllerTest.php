@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Http\Controllers\API;
 
+use App\Http\Resources\CategoryCollection;
+use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -35,5 +37,20 @@ class CategoryControllerTest extends TestCase
         ];
         $this->postJson(route('categories.store'),   $payload)
             ->assertStatus(201);
+    }
+
+    public function testAsGuestItShouldBeAbleToGetCategoryList()
+    {
+        for ($i=0; $i < 5 ; $i++)
+        {
+           \App\Models\Category::factory()->create();
+        }
+        $categories = Category::whereNull("parent_id")->latest()->get();
+        $this->getJson(route('categories.index'))
+            ->assertStatus(200)
+            /*->assertJsonFragment([
+                "categories" => new CategoryCollection($categories)
+            ])*/
+        ;
     }
 }
