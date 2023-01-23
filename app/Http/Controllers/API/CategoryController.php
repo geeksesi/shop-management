@@ -13,11 +13,14 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
-        //
+        $categories = Category::whereNull("parent_id")->latest()->get();
+        return response()->json([
+            "categories" => new CategoryCollection($categories) ,
+        ] , 200);
     }
 
     /**
