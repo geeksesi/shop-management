@@ -29,7 +29,7 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request): \Illuminate\Http\JsonResponse
     {
         Category::create($request->validated());
-        $categories = Category::latest()->get();
+        $categories = Category::whereNull("parent_id")->latest()->get();
         return response()->json([
             "categories" => new CategoryCollection($categories) ,
         ] , 201);
