@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\API\ProductController;
 
+use App\Enums\ProductTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -30,7 +32,7 @@ class UpdateProductRequest extends FormRequest
             'description' => ['required'],
             'quantity' => ['nullable','integer'],
             'price' => ['nullable'],
-            'type' => ['required','string'],
+            'type' => ['required','string',new Enum(ProductTypeEnum::class)],
         ];
     }
 }

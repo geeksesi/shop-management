@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ProductTypeEnum;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,8 +25,10 @@ class ProductFactory extends Factory
             'name' => fake()->name,
             'description'=> fake()->text,
             'quantity'=>10,
-            'creator' => 1,
-            'category_id' => 1
+            'creator' => UserFactory,
+            'category_id' => CategoryFactory,
+            'price' => 2000,
+            'type' => ProductTypeEnum::AVAILABLE
         ];
     }
 }

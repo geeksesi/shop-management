@@ -24,4 +24,13 @@ Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'logi
     ->middleware('throttle:login');
 
 /*---------------products------------*/
-    Route::apiResource('products', \App\Http\Controllers\API\ProductController::class);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::resource('products', \App\Http\Controllers\API\ProductController::class)->only([
+        'create', 'store','update'
+    ]);
+
+});
+//  Route::apiResource('', \App\Http\Controllers\API\v1\ProductController::class);
+ Route::resource('products', \App\Http\Controllers\API\ProductController::class)->only([
+    'index', 'show'
+]);
