@@ -26,8 +26,8 @@ Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'logi
 Route::apiResource("/categories" , \App\Http\Controllers\API\CategoryController::class)
     ->except("index")
     ->middleware('auth:sanctum');
+
 Route::get("/categories" , [\App\Http\Controllers\API\CategoryController::class , "index"])->name("categories.index");
 
 
 
-Route::put("categories/{id}",[\App\Http\Controllers\API\CategoryController::class , "update"])->name("categories.update");

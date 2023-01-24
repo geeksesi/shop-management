@@ -49,7 +49,7 @@ class CategoryController extends Controller
     public function update(CategoryRequest $request, Category $category)
     {
         Category::update($request->validated());
-        $this->getCategoryInTree()->update($category,$request);
+        //$this->getCategoryInTree()->update($category,$request);
         return response()->json([
             "categories"=>new CategoryCollection($this->getCategoryInTree()),
         ],201);
@@ -63,6 +63,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        Category::destroy($category);
+        $category->delete();
+
     }
 }
