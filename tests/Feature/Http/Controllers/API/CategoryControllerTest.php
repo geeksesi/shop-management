@@ -16,7 +16,7 @@ class CategoryControllerTest extends TestCase
     public function testAsGuestItShouldNotBeAbleToStoreCategory()
     {
         $payload = [
-            'title' => $this->faker->words(3,true),
+            'title' => $this->faker->words(3, true),
             'description' => $this->faker->text(),
         ];
         $this->postJson(route('categories.store'), $payload)
@@ -32,7 +32,7 @@ class CategoryControllerTest extends TestCase
         ];
         $this->postJson(route('user.login'), $login_info);
         $payload = [
-            'title' => $this->faker->words(3,true),
+            'title' => $this->faker->words(3, true),
             'description' => $this->faker->text(),
         ];
         $this->postJson(route('categories.store'),   $payload)
@@ -41,16 +41,41 @@ class CategoryControllerTest extends TestCase
 
     public function testAsGuestItShouldBeAbleToGetCategoryList()
     {
-        for ($i=0; $i < 5 ; $i++)
-        {
-           \App\Models\Category::factory()->create();
+        for ($i = 0; $i < 2; $i++) {
+            $parent = Category::factory()->create();
+
+            $c1 = Category::factory()->count(2)->create(['parent_id' => $parent->id]);
+            foreach ($c1 as $cat) {
+                Category::factory()->times(1)->create(['parent_id' => $cat->id]);
+            }
         }
+
+
+
         $categories = Category::whereNull("parent_id")->latest()->get();
-        $this->getJson(route('categories.index'))
+        $response = $this->getJson(route('categories.index'))
             ->assertStatus(200)
-            /*->assertJsonFragment([
-                "categories" => new CategoryCollection($categories)
-            ])*/
-        ;
+            ->assertJsonStructure([
+                "data" => [
+                    '*' => [
+                        'children' => [
+                            '*' => [
+                                'children' => [
+                                    '*' => [
+                                        'children' => []
+                                    ]
+
+                                ]
+
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+
+        $data = $response->json('data');
+
+        $this->assertEmpty($data[0]['children'][0]['children'][0]['children']);
+        $this->assertNotEmpty($data[0]['children'][0]['children']);
     }
 }

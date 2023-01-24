@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CategoryController\CategoryRequest;
+use App\Http\Resources\AuthenticationResource;
 use App\Http\Resources\CategoryCollection;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -19,11 +20,9 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(): CategoryCollection
     {
-        return response()->json([
-            "categories" => new CategoryCollection($this->getCategoryInTree()) ,
-        ] , 200);
+        return new CategoryCollection($this->getCategoryInTree());
     }
 
     /**
@@ -36,8 +35,8 @@ class CategoryController extends Controller
     {
         Category::create($request->validated());
         return response()->json([
-            "categories" => new CategoryCollection($this->getCategoryInTree()) ,
-        ] , 201);
+            "categories" => new CategoryCollection($this->getCategoryInTree()),
+        ], 201);
     }
 
     /**
