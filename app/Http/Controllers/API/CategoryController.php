@@ -16,7 +16,7 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): CategoryCollection
+    public function index(): \Illuminate\Http\JsonResponse
     {
         return (CategoryResource::collection(Category::whereNull("parent_id")->with("children")->latest()->get()))
                     ->response()
