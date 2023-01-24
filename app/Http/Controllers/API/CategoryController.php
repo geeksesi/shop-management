@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CategoryController\CategoryRequest;
 use App\Http\Resources\CategoryCollection;
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -46,13 +47,11 @@ class CategoryController extends Controller
      * @param \App\Models\Category $category
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(CategoryRequest $request, Category $category)
+    public function update(CategoryRequest $request, Category $category):jsonResponse
     {
         Category::update($request->validated());
         //$this->getCategoryInTree()->update($category,$request);
-        return response()->json([
-            "categories"=>new CategoryCollection($this->getCategoryInTree()),
-        ],201);
+        return $this->update();
     }
 
     /**
