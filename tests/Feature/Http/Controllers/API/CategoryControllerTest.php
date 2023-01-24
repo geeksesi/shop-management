@@ -39,6 +39,7 @@ class CategoryControllerTest extends TestCase
             ->assertStatus(201);
     }
 
+
     public function testAsGuestItShouldBeAbleToGetCategoryList()
     {
         for ($i = 0; $i < 2; $i++) {
