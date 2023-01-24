@@ -26,7 +26,7 @@ Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'logi
 /*---------------products------------*/
 Route::middleware('auth:sanctum')->group(function () {
     Route::resource('products', \App\Http\Controllers\API\ProductController::class)->only([
-        'create', 'store','update'
+        'create', 'store','update','destroy'
     ]);
 
 });
