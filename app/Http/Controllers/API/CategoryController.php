@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CategoryController\CategoryRequest;
+
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 
@@ -15,11 +16,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(): CategoryCollection
     {
         return (CategoryResource::collection(Category::whereNull("parent_id")->with("children")->latest()->get()))
-            ->response()
-            ->setStatusCode($this->indexStatusCode);
+                    ->response()
+                    ->setStatusCode($this->indexStatusCode);
     }
 
     /**
