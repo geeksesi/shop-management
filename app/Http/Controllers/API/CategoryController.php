@@ -41,11 +41,13 @@ class CategoryController extends Controller
      *
      * @param CategoryRequest $request
      * @param \App\Models\Category $category
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(CategoryRequest $request, Category $category)
+    public function update(CategoryRequest $request, Category $category): \Illuminate\Http\JsonResponse
     {
-        //
+        $category->update($request->validated());
+        $this->indexStatusCode = 201;
+        return $this->index();
     }
 
     /**
