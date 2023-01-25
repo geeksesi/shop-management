@@ -56,8 +56,9 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(Category $category): \Illuminate\Http\Response
     {
-        //
+        $category->delete();
+        return response()->setStatusCode(200);
     }
 }
