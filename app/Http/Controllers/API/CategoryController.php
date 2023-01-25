@@ -4,17 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CategoryController\CategoryRequest;
-use App\Http\Resources\CategoryCollection;
+
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    private function getCategoryInTree()
-    {
-        return Category::whereNull("parent_id")->with("children")->latest()->get();
-    }
+    private int $indexStatusCode = 200;
     /**
      * Display a listing of the resource.
      *
@@ -22,9 +18,9 @@ class CategoryController extends Controller
      */
     public function index(): \Illuminate\Http\JsonResponse
     {
-        return response()->json([
-            "categories" => new CategoryCollection($this->getCategoryInTree()) ,
-        ] , 200);
+        return (CategoryResource::collection(Category::whereNull("parent_id")->with("children")->latest()->get()))
+                    ->response()
+                    ->setStatusCode($this->indexStatusCode);
     }
 
     /**
@@ -36,22 +32,20 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request): \Illuminate\Http\JsonResponse
     {
         Category::create($request->validated());
-        return response()->json([
-            "categories" => new CategoryCollection($this->getCategoryInTree()) ,
-        ] , 201);
+        $this->indexStatusCode = 201;
+        return $this->index();
     }
+
     /**
      * Update the specified resource in storage.
      *
      * @param CategoryRequest $request
      * @param \App\Models\Category $category
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
-    public function update(CategoryRequest $request, Category $category):jsonResponse
+    public function update(CategoryRequest $request, Category $category)
     {
-        Category::update($request->validated());
-        //$this->getCategoryInTree()->update($category,$request);
-        return $this->update();
+        //
     }
 
     /**
