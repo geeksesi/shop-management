@@ -21,12 +21,14 @@ class ProductFactory extends Factory
     protected $model=Product::class;
     public function definition()
     {
+        $user = \App\Models\User::factory()->create();
+        $category = \App\Models\Category::factory()->create();
         return [
             'name' => fake()->name,
             'description'=> fake()->text,
             'quantity'=>10,
-            'creator' => UserFactory,
-            'category_id' => CategoryFactory,
+            'creator' => $user->id,
+            'category_id' => $category->id,
             'price' => 2000,
             'type' => ProductTypeEnum::AVAILABLE
         ];
