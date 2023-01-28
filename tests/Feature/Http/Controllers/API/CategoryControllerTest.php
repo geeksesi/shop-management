@@ -13,6 +13,7 @@ class CategoryControllerTest extends TestCase
     use WithFaker;
     use RefreshDatabase;
 
+
     public function testAsGuestItShouldNotBeAbleToStoreCategory()
     {
         $payload = [
@@ -26,16 +27,14 @@ class CategoryControllerTest extends TestCase
     public function testAsUserLoggedItShouldBeAbleToStoreCategory()
     {
         $user = \App\Models\User::factory()->create();
-        $login_info = [
-            'username' => $user->username,
-            'password' => 'password'
-        ];
-        $this->postJson(route('user.login'), $login_info);
+        $parent = Category::factory()->create();
+
         $payload = [
             'title' => $this->faker->words(3, true),
             'description' => $this->faker->text(),
+            'parent_id' => $parent->id
         ];
-        $this->postJson(route('categories.store'),   $payload)
+        $response = $this->actingAs($user)->postJson(route('categories.store'), $payload)
             ->assertStatus(201);
     }
 
@@ -51,28 +50,32 @@ class CategoryControllerTest extends TestCase
             }
         }
 
-
-
         $categories = Category::whereNull("parent_id")->latest()->get();
         $response = $this->getJson(route('categories.index'))
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                "data" => [
-                    '*' => [
-                        'children' => [
-                            '*' => [
-                                'children' => [
-                                    '*' => [
-                                        'children' => []
-                                    ]
+            ->assertStatus(200);
 
+        $this->assertTreeResponse($response);
+    }
+
+    private function assertTreeResponse($response, $depth = 3)
+    {
+        $response->assertJsonStructure([
+            "data" => [
+                '*' => [
+                    'children' => [
+                        '*' => [
+                            'children' => [
+                                '*' => [
+                                    'children' => []
                                 ]
 
                             ]
+
                         ]
                     ]
                 ]
-            ]);
+            ]
+        ]);
 
         $data = $response->json('data');
 
