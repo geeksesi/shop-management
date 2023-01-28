@@ -7,21 +7,28 @@ use App\Http\Requests\API\CategoryController\CategoryRequest;
 
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Services\CategoryService;
 use stdClass;
 
 class CategoryController extends Controller
 {
-    private int $indexStatusCode = 200;
+
+    private $service;
+
+    public function __construct(CategoryService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index()
     {
-        return (CategoryResource::collection(Category::whereNull("parent_id")->with("children")->latest()->get()))
-                    ->response()
-                    ->setStatusCode($this->indexStatusCode);
+        $categories = $this->service->getTree();
+        return CategoryResource::collection($categories);
     }
 
     /**
@@ -30,11 +37,11 @@ class CategoryController extends Controller
      * @param CategoryRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(CategoryRequest $request): \Illuminate\Http\JsonResponse
+    public function store(CategoryRequest $request)
     {
         Category::create($request->validated());
-        $this->indexStatusCode = 201;
-        return $this->index();
+        $categories = $this->service->getTree();
+        return response(CategoryResource::collection($categories), 201);
     }
 
     /**
@@ -44,11 +51,11 @@ class CategoryController extends Controller
      * @param \App\Models\Category $category
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(CategoryRequest $request, Category $category): \Illuminate\Http\JsonResponse
+    public function update(CategoryRequest $request, Category $category)
     {
         $category->update($request->validated());
-        $this->indexStatusCode = 201;
-        return $this->index();
+        $categories = $this->service->getTree();
+        return CategoryResource::collection($categories);
     }
 
     /**
@@ -57,10 +64,9 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Category $category): \Illuminate\Http\JsonResponse
+    public function destroy(Category $category)
     {
         $category->delete();
-        return response()->json(new stdClass());
-
+        return response();
     }
 }
