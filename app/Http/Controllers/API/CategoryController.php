@@ -7,6 +7,7 @@ use App\Http\Requests\API\CategoryController\CategoryRequest;
 
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use stdClass;
 
 class CategoryController extends Controller
 {
@@ -54,11 +55,12 @@ class CategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Category $category): \Illuminate\Http\Response
+    public function destroy(Category $category): \Illuminate\Http\JsonResponse
     {
         $category->delete();
-        return response()->setStatusCode(200);
+        return response()->json(new stdClass());
+
     }
 }
