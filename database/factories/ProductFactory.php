@@ -6,6 +6,7 @@ use App\Enums\ProductTypeEnum;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
@@ -18,19 +19,15 @@ class ProductFactory extends Factory
      * @return array<string, mixed>
      */
 
-    protected $model=Product::class;
+    protected $model = Product::class;
     public function definition()
     {
-        $user = \App\Models\User::factory()->create();
-        $category = \App\Models\Category::factory()->create();
         return [
             'name' => fake()->name,
-            'description'=> fake()->text,
-            'quantity'=>10,
-            'creator' => $user->id,
-            'category_id' => $category->id,
+            'description' => fake()->text,
+            'quantity' => 10,
             'price' => 2000,
-            'type' => ProductTypeEnum::AVAILABLE
+            'type' => ProductTypeEnum::DIGITAL
         ];
     }
 }

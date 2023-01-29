@@ -3,22 +3,19 @@
 namespace Tests\Feature\Http\Controllers\API;
 
 use App\Enums\ProductTypeEnum;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
-use Database\Factories\ProductFactory;
-use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+    use WithFaker;
     use RefreshDatabase;
+
+
     public function testListProduct()
     {
         $response = $this->get('api/products');
@@ -27,75 +24,40 @@ class ProductControllerTest extends TestCase
     }
     public function testGetProductById()
     {
-        $user = \App\Models\User::factory()->create();
-        $category = \App\Models\Category::factory()->create();
-        $product = \App\Models\Product::factory()->create();
-       $product_id = Product::get()->random()->id;
-         $this->get('/api/products/' . $product_id)
+        $creator = User::factory()->create();
+        $category = Category::factory()->create();
+        $product = Product::factory()->for($creator, 'creator')->for($category)->create();
+
+        $this->get('/api/products/' . $product->id)
             ->assertStatus(200);
     }
 
     public function testDeleteProduct()
     {
-        $category = \App\Models\Category::factory()->create();
-        $user = \App\Models\User::factory()->create();
-        $token = $user->createToken('api_token');
-        $product=Product::create([
-            'name' => 'test',
-            'description'=> 'tet description',
-            'quantity'=>10,
-            'creator' => $user->id,
-            'category_id' => $category->id,
-            'price' => 2000,
-            'type' => ProductTypeEnum::AVAILABLE
-        ]);
-        $product_id = $product->id;
-        $this->withHeaders( ['Authorization' => 'Bearer '. $token->plainTextToken , 'Accept'=>'application/json','content_type'=>'application/json'])
-            ->json('DELETE', 'api/products/' . $product_id)->assertStatus(200);
+        $product = Product::factory()->forCategory()->forCreator()->create();
+
+        $this->actingAs($product->creator)->deleteJson(route('products.destroy', $product->id))->assertSuccessful();
+
+        $this->assertDatabaseMissing(app(Product::class)->getTable(), ['id' => $product->id]);
     }
 
     public function testCreateProduct()
     {
-        $category = \App\Models\Category::factory()->create();
-        $user = \App\Models\User::factory()->create();
-        $token = $user->createToken('api_token');
-        $product=[
-            'name' => 'test store',
-            'description'=> 'tet description',
-            'quantity'=>10,
-            'creator' => $user->id,
-            'category_id' => $category->id,
-            'price' => 2000,
-            'type' => ProductTypeEnum::AVAILABLE
-        ];
-        $this->withHeaders( ['Authorization' => 'Bearer '. $token->plainTextToken , 'Accept'=>'application/json','content_type'=>'application/json'])
-            ->json('POST', 'api/products',$product)->assertStatus(201);
+        $user = User::factory()->create();
+        $payload = Product::factory()->forCategory()->make()->toArray();
+        $this->actingAs($user)->postJson(route('products.store'), $payload)->assertSuccessful();
     }
 
     public function testUpdateProduct()
     {
-        $category = \App\Models\Category::factory()->create();
-        $user = \App\Models\User::factory()->create();
-        $token = $user->createToken('api_token');
-        $product=Product::create([
-            'name' => 'test update',
-            'description'=> 'tet description',
-            'quantity'=>10,
-            'creator' => $user->id,
-            'category_id' => $category->id,
-            'price' => 2000,
-            'type' => ProductTypeEnum::AVAILABLE
-        ]);
-        $payload=[
+        $user = User::factory()->create();
+        $product = Product::factory()->for($user, 'creator')->forCategory()->create();
+
+        $payload = [
             'name' => 'update',
-            'description'=> 'tet description',
-            'quantity'=>10,
-            'creator' => $user->id,
-            'category_id' => $category->id,
-            'price' => 1000,
-            'type' => ProductTypeEnum::FINISHED
+            'description' => 'tet description',
         ];
-        $this->withHeaders( ['Authorization' => 'Bearer '. $token->plainTextToken , 'Accept'=>'application/json','content_type'=>'application/json'])
-            ->json('PUT','api/products/'. $product->id,$payload)->assertStatus(204);
+        $payload = array_merge($product->toArray(), $payload);
+        $this->actingAs($user)->putJson(route('products.update', $product->id), $payload)->assertSuccessful();
     }
 }
