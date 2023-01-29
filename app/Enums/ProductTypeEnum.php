@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Enums;
-enum ProductTypeEnum: string {
-    case FINISHED = 'finished';
-    case AVAILABLE = 'available';
+
+enum ProductTypeEnum: string
+{
+    case DIGITAL = 'digital';
+    case PHYSICAL = 'physical';
 }
