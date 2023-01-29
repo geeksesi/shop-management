@@ -23,7 +23,13 @@ Route::post('/user/register', [App\Http\Controllers\API\UserController::class, '
 Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'login'])->name('user.login')
     ->middleware('throttle:login');
 
+
 Route::middleware('auth:sanctum')->group(function () {
+
+    /*---------------category------------*/
+    Route::apiResource("/categories", \App\Http\Controllers\API\CategoryController::class)
+        ->except("index")
+        ->middleware('auth:sanctum');
 
     /*---------------products------------*/
     Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)->only([
@@ -31,7 +37,10 @@ Route::middleware('auth:sanctum')->group(function () {
     ])->name('products.store', 'products.update', 'products.destroy');
 });
 
+/*---------------category------------*/
+Route::get("/categories", [\App\Http\Controllers\API\CategoryController::class, "index"])->name("categories.index");
 
+/*---------------products------------*/
 Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)->only([
     'index', 'show'
 ]);
