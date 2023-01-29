@@ -19,25 +19,10 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
-        /*
-         * to do
-         * category_id => category resource
-         * creator => user resource
-         * */
-        $product = Product::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'type' => $request->type,
-            'quantity' => $request->quantity,
-            'creator' => $request->creator,
-            'category_id' => $request->category_id,
-            'price' => $request->price,
-
-        ]);
-        return response()->json([
-            "message" => 'product create successful',
-            "status" => 201
-        ],201);
+        $data = $request->validated();
+        $data["creator_id"] = auth()->user()->id;
+        Product::create($data);
+        return response('', 201);
     }
 
     public function show(Product $product)
@@ -47,29 +32,13 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'type' => $request->type,
-            'quantity' => $request->quantity,
-            'creator' => $request->creator,
-            'category_id' => $request->category_id,
-            'price' => $request->price,
-
-        ]);
-        return response()->json([
-            "message" => 'product update successful',
-            "status" => 204
-        ],204);
-
+        $product->update($request->validated());
+        return response('');
     }
 
     public function destroy(Product $product)
     {
         $product->delete();
-        return response()->json([
-            "message" => 'product delete successful',
-            "status" => 200
-        ]);
+        return response('');
     }
 }
