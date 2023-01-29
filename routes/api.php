@@ -22,3 +22,16 @@ Route::post('/user/register', [App\Http\Controllers\API\UserController::class, '
 
 Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'login'])->name('user.login')
     ->middleware('throttle:login');
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    /*---------------products------------*/
+    Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)->only([
+        'store', 'update', 'destroy'
+    ])->name('products.store', 'products.update', 'products.destroy');
+});
+
+
+Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)->only([
+    'index', 'show'
+]);
