@@ -11,16 +11,24 @@ class Product extends Model
     use HasFactory;
     protected $table = 'products';
     protected $fillable = [
-        'category_id', 'name', 'description', 'quantity',
-        'price', 'creator','type'
+        'name',
+        'description',
+        'quantity',
+        'price',
+        'type',
+        'creator_id',
+        'category_id'
     ];
+
     protected $casts = [
         'type' => ProductTypeEnum::class
     ];
-    public function user()
+
+    public function creator()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'creator_id');
     }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
