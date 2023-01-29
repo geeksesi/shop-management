@@ -27,12 +27,11 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'category_id' => ['required','exists:categories,id'],
-            'creator' => ['required','exists:users,id'],
+            'category_id' => ['required', 'exists:categories,id'],
             'description' => ['required'],
-            'quantity' => ['nullable','integer'],
+            'quantity' => ['nullable', 'integer'],
             'price' => ['nullable'],
-            'type' => ['required','string',new Enum(ProductTypeEnum::class)],
+            'type' => ['required', 'string', new Enum(ProductTypeEnum::class)],
         ];
     }
 }
