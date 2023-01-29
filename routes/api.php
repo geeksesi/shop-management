@@ -23,14 +23,15 @@ Route::post('/user/register', [App\Http\Controllers\API\UserController::class, '
 Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'login'])->name('user.login')
     ->middleware('throttle:login');
 
-/*---------------products------------*/
 Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('products', \App\Http\Controllers\API\ProductController::class)->only([
-        'create', 'store','update','destroy'
-    ]);
 
+    /*---------------products------------*/
+    Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)->only([
+        'store', 'update', 'destroy'
+    ])->name('products.store', 'products.update', 'products.destroy');
 });
-//  Route::apiResource('', \App\Http\Controllers\API\v1\ProductController::class);
- Route::resource('products', \App\Http\Controllers\API\ProductController::class)->only([
+
+
+Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)->only([
     'index', 'show'
 ]);
