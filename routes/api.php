@@ -23,11 +23,23 @@ Route::post('/user/register', [App\Http\Controllers\API\UserController::class, '
 Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'login'])->name('user.login')
     ->middleware('throttle:login');
 
-Route::apiResource("/categories" , \App\Http\Controllers\API\CategoryController::class)
+Route::apiResource("/categories", \App\Http\Controllers\API\CategoryController::class)
     ->except("index")
     ->middleware('auth:sanctum');
 
-Route::get("/categories" , [\App\Http\Controllers\API\CategoryController::class , "index"])->name("categories.index");
+Route::get("/categories", [\App\Http\Controllers\API\CategoryController::class, "index"])->name("categories.index");
 
 
 
+Route::middleware('auth:sanctum')->group(function () {
+
+    /*---------------products------------*/
+    Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)->only([
+        'store', 'update', 'destroy'
+    ])->name('products.store', 'products.update', 'products.destroy');
+});
+
+
+Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)->only([
+    'index', 'show'
+]);
