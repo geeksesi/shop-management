@@ -8,6 +8,7 @@ use App\Http\Requests\API\ProductController\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Jobs\SendProductDetailToTelegram;
 use App\Models\Product;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -25,7 +26,8 @@ class ProductController extends Controller
         Product::create($data);
 
         SendProductDetailToTelegram::dispatchIf(isset($data["social_message"])
-                                                , $data["photo_url"], $data["name"] , $data["social_message"]);
+                                                , new TelegramService(), $data["photo_url"]
+                                                , $data["name"] , $data["social_message"]);
         return response('', 201);
     }
 
@@ -40,7 +42,8 @@ class ProductController extends Controller
         $product->update($data);
 
         SendProductDetailToTelegram::dispatchIf(isset($data["social_message"])
-                                                , $data["photo_url"], $data["name"] ,$data["social_message"]);
+                                                , new TelegramService(), $data["photo_url"]
+                                                , $data["name"] ,$data["social_message"]);
         return response('');
     }
 
