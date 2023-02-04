@@ -80,12 +80,12 @@ class TelegramService
      * @return array|bool
      * @throws Exception
      */
-    public static function send_photo(mixed $_photo, string $_chat_id, string $_caption):array|bool
+    public static function send_photo(mixed $_photo, string $_chat_id, string $_title, string $_description):array|bool
     {
         $parameters = [
             "photo" => $_photo,
             "chat_id" => $_chat_id,
-            "caption" => $_caption
+            "caption" => sprintf("%s: \n %s", $_title, $_description)
         ];
 
         return self::execute('sendPhoto', $parameters, "application/json");
@@ -99,12 +99,12 @@ class TelegramService
      * @return array|bool
      * @throws Exception
      */
-    public static function send_photo_from_file(string $_photo_path, string $_chat_id, string $_caption):array|bool
+    public static function send_photo_from_file(string $_photo_path, string $_chat_id,string $_title, string $_description):array|bool
     {
         $parameters = [
             "photo" => curl_file_create($_photo_path),
             "chat_id" => $_chat_id,
-            "caption" => $_caption
+            "caption" => sprintf("%s: \n %s", $_title, $_description)
         ];
 
         return self::execute('sendPhoto', $parameters, "multipart/form-data");

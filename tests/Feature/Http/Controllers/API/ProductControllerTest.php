@@ -45,6 +45,8 @@ class ProductControllerTest extends TestCase
     {
         $user = User::factory()->create();
         $payload = Product::factory()->forCategory()->make()->toArray();
+        $payload["photo_url"] = "https://mcdn.wallpapersafari.com/medium/38/96/EjQb2Y.jpg";
+        $payload["social_message"] = "social message";
         $this->actingAs($user)->postJson(route('products.store'), $payload)->assertSuccessful();
     }
 
@@ -56,7 +58,10 @@ class ProductControllerTest extends TestCase
         $payload = [
             'name' => 'update',
             'description' => 'tet description',
+            'photo_url' => 'https://mcdn.wallpapersafari.com/medium/38/96/EjQb2Y.jpg',
+            'social_message' => 'social_message'
         ];
+
         $payload = array_merge($product->toArray(), $payload);
         $this->actingAs($user)->putJson(route('products.update', $product->id), $payload)->assertSuccessful();
     }
