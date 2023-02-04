@@ -17,16 +17,19 @@ class SendProductDetailToTelegram implements ShouldQueue
     private string $photo_url;
     private string $title;
     private string $description;
+    private TelegramService $telegram_service;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($photo_url, $title, $description)
+    public function __construct($telegram_service ,$photo_url, $title, $description)
     {
         $this->photo_url = $photo_url;
         $this->title = $title;
         $this->description = $description;
+        $this->telegram_service = $telegram_service;
     }
 
     /**
@@ -36,6 +39,6 @@ class SendProductDetailToTelegram implements ShouldQueue
      */
     public function handle()
     {
-        TelegramService::send_photo($this->photo_url, env("TELEGRAM_RECEIVER_ID"), $this->title, $this->description);
+        $this->telegram_service->send_photo($this->photo_url, env("TELEGRAM_RECEIVER_ID"), $this->title, $this->description);
     }
 }
