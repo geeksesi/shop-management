@@ -9,7 +9,6 @@ use App\Http\Resources\ProductResource;
 use App\Jobs\SendProductDetailToTelegram;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Services\TelegramService;
 
 class ProductController extends Controller
 {
@@ -25,7 +24,8 @@ class ProductController extends Controller
         $data["creator_id"] = auth()->user()->id;
         Product::create($data);
 
-        SendProductDetailToTelegram::dispatchIf(isset($data["social_message"]), $data["photo_url"], $data["name"] , $data["social_message"]);
+        SendProductDetailToTelegram::dispatchIf(isset($data["social_message"])
+                                                , $data["photo_url"], $data["name"] , $data["social_message"]);
         return response('', 201);
     }
 
@@ -39,7 +39,8 @@ class ProductController extends Controller
         $data = $request->validated();
         $product->update($data);
 
-        SendProductDetailToTelegram::dispatchIf(isset($data["social_message"]), $data["photo_url"], $data["name"] ,$data["social_message"]);
+        SendProductDetailToTelegram::dispatchIf(isset($data["social_message"])
+                                                , $data["photo_url"], $data["name"] ,$data["social_message"]);
         return response('');
     }
 
