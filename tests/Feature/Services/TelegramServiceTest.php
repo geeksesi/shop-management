@@ -23,7 +23,9 @@ class TelegramServiceTest extends TestCase
         ];
 
         $telegramServiceMock = $this->partialMock(TelegramService::class);
-        $telegramServiceMock->shouldReceive('execute')->with('sendPhoto', $parameters, "application/json")->andReturn(True);
+        $telegramServiceMock->shouldReceive('execute')
+                            ->with('sendPhoto', $parameters, "application/json")
+                            ->andReturn(True);
 
 
         $result = $telegramServiceMock->send_photo($photo_path, $chat_id, $title, $description);

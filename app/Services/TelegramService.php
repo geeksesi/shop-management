@@ -21,6 +21,9 @@ class TelegramService
      */
     public function execute(string $_method, array $_parameters, string $_content_type): array|bool
     {
+        if (!isset($this->url)) {
+            $this->__construct();
+        }
 
         $url = $this->url . $_method;
 
