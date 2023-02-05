@@ -3,9 +3,10 @@
 namespace Services;
 
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 use App\Services\TelegramService;
-use Mockery\MockInterface;
+
 
 class TelegramServiceTest extends TestCase
 {
@@ -16,20 +17,13 @@ class TelegramServiceTest extends TestCase
         $title = $this->faker->text;
         $description = $this->faker->text;
 
-        $parameters = [
-            "photo" => $photo_path,
-            "chat_id" => $chat_id,
-            "caption" => sprintf("%s: \n %s", $title, $description)
-        ];
+        Http::fake([
+            'https://api.telegram.org/*' => Http::response(['response'], 200, ['header']),
+        ]);
 
-        $telegramServiceMock = $this->partialMock(TelegramService::class);
-        $telegramServiceMock->shouldReceive('execute')
-                            ->with('sendPhoto', $parameters, "application/json")
-                            ->andReturn(True);
-
-
-        $result = $telegramServiceMock->send_photo($photo_path, $chat_id, $title, $description);
-        $this->assertTrue($result);
+        $telegramService = new TelegramService();
+        $result = $telegramService->send_photo($photo_path, $chat_id, $title, $description);
+        $this->assertEquals(200, $result['status_code']);
     }
 
     public function testSendPhotoFail(){
@@ -38,18 +32,12 @@ class TelegramServiceTest extends TestCase
         $title = $this->faker->text;
         $description = $this->faker->text;
 
-        $parameters = [
-            "photo" => $photo_path,
-            "chat_id" => $chat_id,
-            "caption" => sprintf("%s: \n %s", $title, $description)
-        ];
+        Http::fake([
+            'https://api.telegram.org/*' => Http::response(['response'], 400, ['header']),
+        ]);
 
-        $telegramServiceMock = $this->partialMock(TelegramService::class);
-        $telegramServiceMock->shouldReceive('execute')
-                            ->with('sendPhoto', $parameters, "application/json")
-                            ->andReturn(false);
-
-        $result = $telegramServiceMock->send_photo($photo_path, $chat_id, $title, $description);
-        $this->assertFalse($result);
+        $telegramService = new TelegramService();
+        $result = $telegramService->send_photo($photo_path, $chat_id, $title, $description);
+        $this->assertEquals(400, $result['status_code']);
     }
 }
