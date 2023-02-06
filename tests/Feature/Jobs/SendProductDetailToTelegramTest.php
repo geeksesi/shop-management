@@ -20,10 +20,11 @@ class SendProductDetailToTelegramTest extends TestCase
         $description = $this->faker->text;
 
         $telegramServiceMock->shouldReceive('send_photo')
-                            ->once()
-                            ->with($photo_url, $chat_id , $title, $description);
+            ->once()
+            ->with($photo_url, $chat_id , $title, $description);
 
-        $SendProductDetailToTelegram = new SendProductDetailToTelegram($telegramServiceMock ,$photo_url, $title, $description);
-        $SendProductDetailToTelegram->handle();
+        $SendProductDetailToTelegram = new SendProductDetailToTelegram($photo_url, $title, $description);
+        $SendProductDetailToTelegram->handle($telegramServiceMock);
+
     }
 }
