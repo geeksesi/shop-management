@@ -44,12 +44,12 @@ class TelegramService
      */
     public function send_photo(mixed $photo_path, string $chat_id, string $title, string $description):array|bool
     {
-        $parameters = [
+        $params = [
             "photo" => $photo_path,
             "chat_id" => $chat_id,
             "caption" => sprintf("%s: \n %s", $title, $description)
         ];
-        return $this->execute('sendPhoto', $parameters, "application/json");
+        return $this->execute('sendPhoto', $params, "application/json");
     }
 
     /**
@@ -62,13 +62,13 @@ class TelegramService
     public function send_photo_from_file(string $photo_path, string $chat_id,string $title, string $description):array|bool
     {
         $photo = fopen($photo_path, 'r');
-        $parameters = [
+        $params = [
             "photo" => $photo,
             "chat_id" => $chat_id,
             "caption" => sprintf("%s: \n %s", $title, $description)
         ];
 
-        return $this->execute('sendPhoto', $parameters, "multipart/form-data");
+        return $this->execute('sendPhoto', $params, "multipart/form-data");
 
     }
 }
