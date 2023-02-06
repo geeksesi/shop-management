@@ -27,7 +27,8 @@ class ProductFactory extends Factory
             'description' => fake()->text,
             'quantity' => 10,
             'price' => 2000,
-            'type' => ProductTypeEnum::DIGITAL
+            'type' => ProductTypeEnum::DIGITAL,
+            'thumbnail' => fake()->url
         ];
     }
 }
