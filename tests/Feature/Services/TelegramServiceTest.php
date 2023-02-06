@@ -17,8 +17,9 @@ class TelegramServiceTest extends TestCase
         $title = $this->faker->text;
         $description = $this->faker->text;
 
+        $url = sprintf('https://api.telegram.org/bot%s/%s', env("TELEGRAM_BOT_TOKEN"), 'sendPhoto');
         Http::fake([
-            'https://api.telegram.org/*' => Http::response(['response'], 200, ['header']),
+            $url => Http::response(['response'], 200, ['header']),
         ]);
 
         $telegramService = new TelegramService();
@@ -32,8 +33,9 @@ class TelegramServiceTest extends TestCase
         $title = $this->faker->text;
         $description = $this->faker->text;
 
+        $url = sprintf('https://api.telegram.org/bot%s/%s', env("TELEGRAM_BOT_TOKEN"), 'sendPhoto');
         Http::fake([
-            'https://api.telegram.org/*' => Http::response(['response'], 400, ['header']),
+            $url => Http::response(['response'], 400, ['header']),
         ]);
 
         $telegramService = new TelegramService();
