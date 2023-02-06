@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Jobs\SendProductDetailToTelegram;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Bus;
+use \Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
@@ -45,30 +45,29 @@ class ProductControllerTest extends TestCase
 
     public function testCreateProduct()
     {
-        Bus::fake();
-        $user = User::factory()->create();
+
         $payload = Product::factory()->forCategory()->make()->toArray();
-        $payload["photo_url"] = "test";
         $payload["social_message"] = "test";
+
+        Queue::fake();
+        $user = User::factory()->create();
         $this->actingAs($user)->postJson(route('products.store'), $payload)->assertSuccessful();
-        Bus::assertDispatched(SendProductDetailToTelegram::class);
+        Queue::assertPushed(SendProductDetailToTelegram::class);
     }
 
     public function testUpdateProduct()
     {
-        Bus::fake();
+
+        Queue::fake();
         $user = User::factory()->create();
         $product = Product::factory()->for($user, 'creator')->forCategory()->create();
-
         $payload = [
             'name' => 'update',
             'description' => 'tet description',
-            'photo_url' => 'test',
             'social_message' => 'test'
         ];
-
         $payload = array_merge($product->toArray(), $payload);
         $this->actingAs($user)->putJson(route('products.update', $product->id), $payload)->assertSuccessful();
-        Bus::assertDispatched(SendProductDetailToTelegram::class);
+        Queue::assertPushed(SendProductDetailToTelegram::class);
     }
 }
