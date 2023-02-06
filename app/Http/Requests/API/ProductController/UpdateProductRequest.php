@@ -33,7 +33,7 @@ class UpdateProductRequest extends FormRequest
             'price' => ['nullable'],
             'type' => ['required', 'string', new Enum(ProductTypeEnum::class)],
             'social_message' => ['nullable', 'string'],
-            'photo_url' => ['nullable', 'string']
+            'thumbnail' => ['nullable', 'string']
         ];
     }
 }
