@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use App\Enums\ProductTypeEnum;
+use App\Models\Traits\hasFilter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Filters\ProductFilter;
-use Illuminate\Database\Eloquent\Builder;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory,
+        HasFilter;
     protected $table = 'products';
     protected $fillable = [
         'name',
@@ -37,8 +37,4 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function scopeFilter(Builder $builder, $request)
-    {
-        return (new ProductFilter($request))->filter($builder);
-    }
 }
