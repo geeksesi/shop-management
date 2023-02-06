@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Actions\SendProductDetailToTelegramAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\ProductController\StoreProductRequest;
 use App\Http\Requests\API\ProductController\UpdateProductRequest;
@@ -19,15 +20,12 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request, SendProductDetailToTelegramAction $action)
     {
         $data = $request->validated();
         $data["creator_id"] = auth()->user()->id;
         Product::create($data);
-
-        SendProductDetailToTelegram::dispatchIf(isset($data["social_message"])
-                                                , new TelegramService(), $data["photo_url"]
-                                                , $data["name"] , $data["social_message"]);
+        $action->handle($data);
         return response('', 201);
     }
 
@@ -36,14 +34,11 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product, SendProductDetailToTelegramAction $action)
     {
         $data = $request->validated();
         $product->update($data);
-
-        SendProductDetailToTelegram::dispatchIf(isset($data["social_message"])
-                                                , new TelegramService(), $data["photo_url"]
-                                                , $data["name"] ,$data["social_message"]);
+        $action->handle($data);
         return response('');
     }
 
