@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Filters\ProductFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\ProductController\StoreProductRequest;
 use App\Http\Requests\API\ProductController\UpdateProductRequest;
@@ -11,10 +12,10 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request,ProductFilter $filter)
     {
         #$products = Product::paginate();
-        $products = Product::filter($request)->paginate();
+        $products = Product::filter($filter)->paginate();
         return ProductResource::collection($products);
     }
 
