@@ -28,6 +28,7 @@ class ProductController extends Controller
         $data = $request->validated();
         $data["creator_id"] = auth()->user()->id;
         Product::create($data);
+        $this->action->handle($data);
         return response('', 201);
     }
 
