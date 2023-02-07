@@ -43,13 +43,11 @@ class TelegramService
      * @param string $description
      * @return array|bool
      */
-    public function send_photo_from_file($photo_file, string $chat_id, string $title, string $description):array|bool
+    public function send_photo_from_file($photo_url, string $chat_id, string $title, string $description):array|bool
     {
 
-        $path = Storage::putFile('products_thumbnail', $photo_file);
-
         $params = [
-            "photo" => Storage::disk('local')->readStream($path),
+            "photo" => Storage::disk('local')->readStream($photo_url),
             "chat_id" => $chat_id,
             "caption" => sprintf("%s: \n %s", $title, $description)
         ];

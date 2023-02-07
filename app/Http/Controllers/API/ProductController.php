@@ -10,6 +10,7 @@ use App\Http\Requests\API\ProductController\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -27,7 +28,13 @@ class ProductController extends Controller
     {
         $data = $request->validated();
         $data["creator_id"] = auth()->user()->id;
+        $relative_path = $request->thumbnail->storeAs('products_thumbnail', sprintf("%s.jpg",$data["name"]));
+        $full_path = Storage::disk('local')->path($relative_path);
+
+        $data["thumbnail"] = $full_path;
         Product::create($data);
+
+        $data["thumbnail"] = $relative_path;
         $this->action->handle($data);
         return response('', 201);
     }
