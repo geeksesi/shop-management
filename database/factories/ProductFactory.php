@@ -24,7 +24,6 @@ class ProductFactory extends Factory
     protected $model = Product::class;
     public function definition()
     {
-        Storage::fake('photos');
         return [
             'name' => fake()->name,
             'description' => fake()->text,
@@ -33,5 +32,7 @@ class ProductFactory extends Factory
             'type' => ProductTypeEnum::DIGITAL,
             'thumbnail' => UploadedFile::fake()->create('image.jpg')
         ];
+
+
     }
 }

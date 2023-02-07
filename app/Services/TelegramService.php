@@ -22,16 +22,11 @@ class TelegramService
      * @param string $content_type
      * @return array
      */
-    public function execute(string $method, array $params, string $content_type):array
+    public function execute(string $method, array $params):array
     {
         $url = sprintf('https://api.telegram.org/bot%s/%s', $this->token, $method);
-        $response = "";
-        if($content_type == 'multipart/form-data'){
-            $response = Http::asMultipart()->connectTimeout(30)->post($url, $params);
-        }
-        elseif ($content_type == 'application/json'){
-            $response = Http::connectTimeout(30)->post($url, $params);
-        }
+
+        $response = Http::asMultipart()->connectTimeout(30)->post($url, $params);
 
         return ['result'=>$response->json('result', []), 'status_code'=>$response->status()];
     }
@@ -52,7 +47,7 @@ class TelegramService
             "caption" => sprintf("%s: \n %s", $title, $description)
         ];
 
-        return $this->execute('sendPhoto', $params, "multipart/form-data");
+        return $this->execute('sendPhoto', $params);
     }
 
 }
