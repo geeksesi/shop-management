@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 
 class TelegramService
 {
-    private $token;
+    private string $token;
 
 
     public function __construct()
@@ -21,7 +22,7 @@ class TelegramService
      * @param string $content_type
      * @return array
      */
-    public function execute(string $method, array $params, string $content_type)
+    public function execute(string $method, array $params, string $content_type):array
     {
         $url = sprintf('https://api.telegram.org/bot%s/%s', $this->token, $method);
         $response = "";
@@ -42,33 +43,19 @@ class TelegramService
      * @param string $description
      * @return array|bool
      */
-    public function send_photo(mixed $photo_path, string $chat_id, string $title, string $description):array|bool
+    public function send_photo_from_file($photo_file, string $chat_id, string $title, string $description):array|bool
     {
-        $params = [
-            "photo" => $photo_path,
-            "chat_id" => $chat_id,
-            "caption" => sprintf("%s: \n %s", $title, $description)
-        ];
-        return $this->execute('sendPhoto', $params, "application/json");
-    }
 
-    /**
-     * @param string $photo_path
-     * @param string $chat_id
-     * @param string $title
-     * @param string $description
-     * @return array|bool
-     */
-    public function send_photo_from_file(string $photo_path, string $chat_id,string $title, string $description):array|bool
-    {
-        $photo = fopen($photo_path, 'r');
+        $path = Storage::putFile('products_thumbnail', $photo_file);
+
         $params = [
-            "photo" => $photo,
+            "photo" => Storage::disk('local')->readStream($path),
             "chat_id" => $chat_id,
             "caption" => sprintf("%s: \n %s", $title, $description)
         ];
 
         return $this->execute('sendPhoto', $params, "multipart/form-data");
-
     }
+
 }
+
