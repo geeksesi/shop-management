@@ -24,7 +24,7 @@ Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'logi
     ->middleware('throttle:login');
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum','auth:admin-api'])->group(function () {
 
     /*---------------category------------*/
     Route::apiResource("/categories", \App\Http\Controllers\API\CategoryController::class)
