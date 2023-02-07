@@ -7,25 +7,27 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\ProductController\StoreProductRequest;
 use App\Http\Requests\API\ProductController\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
-use App\Jobs\SendProductDetailToTelegram;
 use App\Models\Product;
-use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct(private SendProductDetailToTelegramAction $action)
+    {
+    }
+
     public function index(Request $request)
     {
         $products = Product::paginate();
         return ProductResource::collection($products);
     }
 
-    public function store(StoreProductRequest $request, SendProductDetailToTelegramAction $action)
+    public function store(StoreProductRequest $request)
     {
         $data = $request->validated();
         $data["creator_id"] = auth()->user()->id;
         Product::create($data);
-        $action->handle($data);
+        $this->action->handle($data);
         return response('', 201);
     }
 
@@ -34,11 +36,11 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-    public function update(UpdateProductRequest $request, Product $product, SendProductDetailToTelegramAction $action)
+    public function update(UpdateProductRequest $request, Product $product)
     {
         $data = $request->validated();
         $product->update($data);
-        $action->handle($data);
+        $this->action->handle($data);
         return response('');
     }
 
