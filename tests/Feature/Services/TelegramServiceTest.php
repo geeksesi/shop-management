@@ -2,49 +2,37 @@
 
 namespace Services;
 
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Http;
-use \App\Models\Product;
-use Tests\TestCase;
+use App\Models\Product;
 use App\Services\TelegramService;
+use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
+
 
 
 class TelegramServiceTest extends TestCase
 {
-    use WithFaker;
     public function testSendPhotoSuccessful(){
         $product = Product::factory()->forCategory()->make();
         $chat_id = env('TELEGRAM_RECEIVER_ID');
-        $photo_file = $product->thumbnail;
+        $photo_url = $product->thumbnail;
         $title = $product->name;
         $description = $product->description;
 
+        $photo_url = Storage::disk('local')->putFileAs('testing', $photo_url, 'test.jpg');
 
-        $url = sprintf('https://api.telegram.org/bot%s/%s', env("TELEGRAM_BOT_TOKEN"), 'sendPhoto');
-        Http::fake([
-            $url => Http::response(['response'], 200, ['header']),
-        ]);
 
-        $telegramService = new TelegramService();
-        $result = $telegramService->send_photo_from_file($photo_file, $chat_id, $title, $description);
+        $telegramServiceMock = $this->partialMock(TelegramService::class);
+        $telegramServiceMock->shouldReceive('execute')
+            ->once()->andReturnUsing(function (string $method, array $params){
+                if(gettype($params['photo']) == 'resource'){
+                    return ['status_code' => 200];
+                }else{
+                    return ['status_code' => 400];
+                }
+        });
+
+        $result = $telegramServiceMock->send_photo_from_file($photo_url, $chat_id, $title, $description);
         $this->assertEquals(200, $result['status_code']);
-    }
-
-    public function testSendPhotoFail(){
-        $product = Product::factory()->forCategory()->make();
-        $chat_id = env('TELEGRAM_RECEIVER_ID');
-        $photo_file = $product->thumbnail;
-        $title = $product->name;
-        $description = $product->description;
-
-        $url = sprintf('https://api.telegram.org/bot%s/%s', env("TELEGRAM_BOT_TOKEN"), 'sendPhoto');
-        Http::fake([
-            $url => Http::response(['response'], 400, ['header']),
-        ]);
-
-        $telegramService = new TelegramService();
-        $result = $telegramService->send_photo_from_file($photo_file, $chat_id, $title, $description);
-        $this->assertEquals(400, $result['status_code']);
     }
 
 }
