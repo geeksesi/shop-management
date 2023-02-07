@@ -4,6 +4,7 @@ namespace Services;
 
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Http;
+use \App\Models\Product;
 use Tests\TestCase;
 use App\Services\TelegramService;
 
@@ -12,10 +13,12 @@ class TelegramServiceTest extends TestCase
 {
     use WithFaker;
     public function testSendPhotoSuccessful(){
-        $photo_path = "https://mcdn.wallpapersafari.com/medium/38/96/EjQb2Y.jpg";
+        $product = Product::factory()->forCategory()->make();
         $chat_id = env('TELEGRAM_RECEIVER_ID');
-        $title = $this->faker->text;
-        $description = $this->faker->text;
+        $photo_file = $product->thumbnail;
+        $title = $product->name;
+        $description = $product->description;
+
 
         $url = sprintf('https://api.telegram.org/bot%s/%s', env("TELEGRAM_BOT_TOKEN"), 'sendPhoto');
         Http::fake([
@@ -23,15 +26,16 @@ class TelegramServiceTest extends TestCase
         ]);
 
         $telegramService = new TelegramService();
-        $result = $telegramService->send_photo($photo_path, $chat_id, $title, $description);
+        $result = $telegramService->send_photo_from_file($photo_file, $chat_id, $title, $description);
         $this->assertEquals(200, $result['status_code']);
     }
 
     public function testSendPhotoFail(){
-        $photo_path = $this->faker->text;
+        $product = Product::factory()->forCategory()->make();
         $chat_id = env('TELEGRAM_RECEIVER_ID');
-        $title = $this->faker->text;
-        $description = $this->faker->text;
+        $photo_file = $product->thumbnail;
+        $title = $product->name;
+        $description = $product->description;
 
         $url = sprintf('https://api.telegram.org/bot%s/%s', env("TELEGRAM_BOT_TOKEN"), 'sendPhoto');
         Http::fake([
@@ -39,7 +43,8 @@ class TelegramServiceTest extends TestCase
         ]);
 
         $telegramService = new TelegramService();
-        $result = $telegramService->send_photo($photo_path, $chat_id, $title, $description);
+        $result = $telegramService->send_photo_from_file($photo_file, $chat_id, $title, $description);
         $this->assertEquals(400, $result['status_code']);
     }
+
 }
