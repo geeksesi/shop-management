@@ -18,7 +18,8 @@ class TelegramServiceTest extends TestCase
         $title = $product->name;
         $description = $product->description;
 
-        $photo_url = Storage::disk('local')->putFileAs('testing', $photo_file, 'test.jpg');
+        $photo_url = Storage::fake('products_thumbnail')->putFileAs('', $photo_file, 'test.jpg');
+
 
 
         $telegramServiceMock = $this->partialMock(TelegramService::class);
