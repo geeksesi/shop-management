@@ -78,15 +78,13 @@ class ProductControllerTest extends TestCase
         Product::factory()->for($category)->forCreator()->create();
         Product::factory()->count(5)->for($category2)->forCreator()->create();
 
-        $this->getJson(route("products.index" , ['category' => $category->id]))
+        $this->getJson(route("products.index", ['category' => $category->id]))
             ->assertSuccessful()
-            ->assertJsonCount(1 , 'data')
-        ;
+            ->assertJsonCount(1, 'data');
 
-        $this->getJson(route("products.index", ['category' => $category2->id]) )
+        $this->getJson(route("products.index", ['category' => $category2->id]))
             ->assertSuccessful()
-            ->assertJsonCount(5 , 'data');
-
+            ->assertJsonCount(5, 'data');
     }
     public function testFilterWithPrice()
     {
@@ -94,12 +92,11 @@ class ProductControllerTest extends TestCase
         $priceLessThan50Count = 0;
         $price50Count = 0;
 
-        for ($i = 0; $i < 10 ;$i++)
-        {
-            $price = rand(0 , 100);
+        for ($i = 0; $i < 10; $i++) {
+            $price = rand(0, 100);
             if ($price > 50)
                 $priceMoreThan50Count++;
-            else if($price < 50)
+            else if ($price < 50)
                 $priceLessThan50Count++;
             else
                 $price50Count++;
@@ -111,22 +108,18 @@ class ProductControllerTest extends TestCase
         }
 
 
-        $this->getJson(route("products.index" , ['price' => 50 , 'price_action' => 'more_than']))
-            ->dump()
+        $this->getJson(route("products.index", ['price' => 50, 'price_action' => 'more_than']))
             ->assertSuccessful()
-            ->assertJsonCount($priceMoreThan50Count , 'data');
+            ->assertJsonCount($priceMoreThan50Count, 'data');
 
 
-        $this->getJson(route("products.index" , ['price' => 50 , 'price_action' => 'less_than']))
-            ->dump()
+        $this->getJson(route("products.index", ['price' => 50, 'price_action' => 'less_than']))
             ->assertSuccessful()
-            ->assertJsonCount($priceLessThan50Count , 'data');
+            ->assertJsonCount($priceLessThan50Count, 'data');
 
 
-        $this->getJson(route("products.index" , ['price' => 50 ]))
-            ->dump()
+        $this->getJson(route("products.index", ['price' => 50]))
             ->assertSuccessful()
-            ->assertJsonCount($price50Count , 'data');
+            ->assertJsonCount($price50Count, 'data');
     }
-
 }
