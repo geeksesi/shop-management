@@ -20,7 +20,8 @@ class Product extends Model
         'price',
         'type',
         'creator_id',
-        'category_id'
+        'category_id',
+        'thumbnail'
     ];
 
     protected $casts = [

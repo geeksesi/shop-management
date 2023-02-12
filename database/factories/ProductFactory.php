@@ -6,7 +6,9 @@ use App\Enums\ProductTypeEnum;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
@@ -27,7 +29,10 @@ class ProductFactory extends Factory
             'description' => fake()->text,
             'quantity' => 10,
             'price' => 2000,
-            'type' => ProductTypeEnum::DIGITAL
+            'type' => ProductTypeEnum::DIGITAL,
+            'thumbnail' => UploadedFile::fake()->create('image.jpg')
         ];
+
+
     }
 }
