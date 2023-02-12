@@ -28,13 +28,10 @@ class ProductController extends Controller
     {
         $data = $request->validated();
         $data["creator_id"] = auth()->user()->id;
-        $relative_path = $request->thumbnail->storeAs('products_thumbnail', sprintf("%s.jpg",$data["name"]));
-        $full_path = Storage::disk('local')->path($relative_path);
-
-        $data["thumbnail"] = $full_path;
-        Product::create($data);
-
+        $relative_path = $request->file('thumbnail')->storeAs('products_thumbnail', sprintf("%s.jpg", $data["name"]));
         $data["thumbnail"] = $relative_path;
+
+        Product::create($data);
         $this->action->handle($data);
         return response('', 201);
     }
