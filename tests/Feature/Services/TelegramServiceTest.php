@@ -4,6 +4,7 @@ namespace Services;
 
 use App\Models\Product;
 use App\Services\TelegramService;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -11,18 +12,20 @@ use Tests\TestCase;
 
 class TelegramServiceTest extends TestCase
 {
+    use WithFaker;
     public function testSendPhotoSuccessful(){
         $product = Product::factory()->forCategory()->make();
-        $chat_id = env('TELEGRAM_RECEIVER_ID');
         $photo_file = $product->thumbnail;
         $title = $product->name;
         $description = $product->description;
+        $chat_id = $this->faker->text;
 
         $photo_url = Storage::fake('products_thumbnail')->putFileAs('', $photo_file, 'test.jpg');
 
 
 
-        $telegramServiceMock = $this->partialMock(TelegramService::class);
+        $telegramServiceMock = \Mockery::mock(TelegramService::class, [$chat_id])->makePartial();
+
         $telegramServiceMock->shouldReceive('execute')
             ->once()->andReturnUsing(function (string $method, array $params){
                 if(gettype($params['photo']) == 'resource'){
@@ -32,7 +35,7 @@ class TelegramServiceTest extends TestCase
                 }
         });
 
-        $result = $telegramServiceMock->send_photo_from_file($photo_url, $chat_id, $title, $description);
+        $result = $telegramServiceMock->send_photo_from_file($photo_url, $title, $description);
         $this->assertEquals(200, $result['status_code']);
     }
 

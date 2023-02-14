@@ -30,6 +30,6 @@ class SendProductDetailToTelegram implements ShouldQueue
      */
     public function handle(TelegramService $telegram_service)
     {
-        $telegram_service->send_photo_from_file($this->photo_url, env("TELEGRAM_RECEIVER_ID"), $this->title, $this->description);
+        $telegram_service->send_photo_from_file($this->photo_url, $this->title, $this->description);
     }
 }

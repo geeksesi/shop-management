@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\Storage;
 class TelegramService
 {
     private string $token;
+    private string $chat_id;
 
 
     public function __construct()
     {
         $this->token = env("TELEGRAM_BOT_TOKEN");
+        $this->chat_id = env('TELEGRAM_RECEIVER_ID');
     }
 
     /**
@@ -38,12 +40,13 @@ class TelegramService
      * @param string $description
      * @return array|bool
      */
-    public function send_photo_from_file($photo_url, string $chat_id, string $title, string $description):array|bool
+    public function send_photo_from_file($photo_url, string $title, string $description):array|bool
     {
 
+
         $params = [
-            "photo" => Storage::disk('local')->readStream($photo_url),
-            "chat_id" => $chat_id,
+            "photo" => Storage::disk('products_thumbnail')->readStream($photo_url),
+            "chat_id" => $this->chat_id,
             "caption" => sprintf("%s: \n %s", $title, $description)
         ];
 
