@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string("author_name")->nullable()->comment("if not logged in");
 
             $table->unsignedBigInteger('id')->nullable();
-            $table->foreign('id')->references('id')->on('blog_post')->onDelete('cascade');
+            $table->foreign('id')->references('id')->on('blogPost')->onDelete('cascade');
 
         });
     }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class blog_post extends Model
+class BlogPost extends Model
 {
     use HasFactory;
 
@@ -24,6 +24,6 @@ class blog_post extends Model
 
     public function comments()
     {
-        return $this->hasMany(blog_comment::class);
+        return $this->hasMany(blogComment::class);
     }
 }

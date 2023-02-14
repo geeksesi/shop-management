@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string("title");
             $table->text("body");
-            $table->text("thumbnail");
+            $table->string("thumbnail")->nullable();
             $table->text("seo_description");
             $table->string("tags");
 

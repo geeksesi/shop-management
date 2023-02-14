@@ -17,7 +17,7 @@ class blog_category extends Model
 
      public function posts()
      {
-         return $this->belongsToMany(blog_post::class);
+         return $this->belongsToMany(blogPost::class);
      }
 
 
