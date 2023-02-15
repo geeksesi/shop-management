@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Enums\ProductTypeEnum;
+use App\Models\Traits\hasFilter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory,
+        HasFilter;
     protected $table = 'products';
     protected $fillable = [
         'name',
@@ -17,7 +20,8 @@ class Product extends Model
         'price',
         'type',
         'creator_id',
-        'category_id'
+        'category_id',
+        'thumbnail'
     ];
 
     protected $casts = [
@@ -33,4 +37,5 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
 }
