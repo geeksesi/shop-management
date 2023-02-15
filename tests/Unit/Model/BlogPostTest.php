@@ -10,7 +10,7 @@ class BlogPostTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function it_has_many_comments()
+    public function testItHasManyComments()
     {
         $post = BlogPost::factory()->create();
         $comment1 = BlogComment::factory()->create(['id' => $post->id]);
