@@ -19,7 +19,6 @@ class OrderService
                 $order->products()->attach($product_id_quantity['product_id']
                     , ['quantity'=> $product_id_quantity['quantity']]);
             }
-
             OrderService::subtractStock($order); ##move to observer
             SoftDeleteOrder::dispatch($order, $products_id_quantity)->delay(now()->addSeconds(15));
         });
@@ -27,12 +26,13 @@ class OrderService
     }
     public static function addStock(Order $order){
 
-        $products = $order->products();
+
 
         $products_id_quantity = Product_order::select('product_id', 'quantity')
                                     ->where('order_id', $order->id)
                                     ->get()->toArray();
 
+        $products = $order->products();
         $products->each(function ($item, $key) use ($products_id_quantity){
             $item->quantity += $products_id_quantity[$key]['quantity'];
             $item->save();
@@ -41,13 +41,13 @@ class OrderService
 
     public static function subtractStock(Order $order){
 
-        $products = $order->products();
+
 
         $products_id_quantity = Product_order::select('product_id', 'quantity')
             ->where('order_id', $order->id)
             ->get()->toArray();
 
-
+        $products = $order->products();
         $products->each(function ($item, $key) use ($products_id_quantity){
             $item->quantity -= $products_id_quantity[$key]['quantity'];
             $item->save();
@@ -69,7 +69,7 @@ class OrderService
     public static function all_products_has_stock(array $products_id_quantity){
         $Stock_is_available = true;
         foreach ($products_id_quantity as $product_id_quantity){
-            $product = DB::table('products')->sharedLock()
+            $product = DB::table('products')
                         ->where('id', '=', $product_id_quantity['product_id'])
                         ->where('quantity' , '=' ,0)->first();
 

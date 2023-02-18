@@ -23,12 +23,9 @@ class OrderController extends Controller
         if (!OrderService::all_products_has_stock($products_id_quantity)){
             return response('A Product is not available!', 400);
         }
-
         OrderService::store($data, $products_id_quantity);
 
-
         return response(status: 200);
-        #release the database.
     }
 
     public function check(Order $order){
