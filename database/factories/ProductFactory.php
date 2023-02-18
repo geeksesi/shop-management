@@ -33,6 +33,14 @@ class ProductFactory extends Factory
             'thumbnail' => UploadedFile::fake()->create('image.jpg')
         ];
 
+    }
 
+    public function zeroStock()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'quantity' => 0,
+            ];
+        });
     }
 }
