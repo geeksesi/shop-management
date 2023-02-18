@@ -49,4 +49,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Product::class, 'creator_id');
     }
+
+    public function orders()
+    {
+        return $this->hasMany(User::class);
+    }
+
 }
