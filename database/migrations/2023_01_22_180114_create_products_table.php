@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('price');
             $table->unsignedInteger('quantity');
             $table->string('type');
-            $table->foreignId('creator')->references('id')->on('users');
+            $table->foreignId('creator_id')->references('id')->on('users');
             $table->foreignId('category_id')
                 ->constrained()
                 ->onUpdate('cascade')

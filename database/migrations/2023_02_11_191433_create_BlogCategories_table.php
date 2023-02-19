@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            #$table->renameColumn('creator', 'creator_id');
+        Schema::create('BlogCategories', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->string("title");
+            $table->text("description");
         });
     }
 
@@ -25,8 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
-            #$table->renameColumn('creator_id', 'creator');
-        });
+        Schema::dropIfExists('BlogCategories');
     }
 };
