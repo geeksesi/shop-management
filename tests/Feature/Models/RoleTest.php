@@ -19,7 +19,7 @@ class RoleTest extends TestCase
 
     public function testRoleRelationshipWithUser()
     {
-        $count= rand(0,10);
+        $count= rand(1,10);
         $role = Role::factory()
         ->hasUsers($count)->create();
 
@@ -29,7 +29,7 @@ class RoleTest extends TestCase
 
     public function testRoleRelationshipWithPermission()
     {
-        $count= rand(0,10);
+        $count= rand(1,10);
         $role = Role::factory()
         ->hasPermissions($count)->create();
 

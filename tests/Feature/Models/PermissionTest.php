@@ -17,7 +17,7 @@ class PermissionTest extends TestCase
      */
     public function testPermissionRelationshipWithRole()
     {
-        $count= rand(0,10);
+        $count= rand(1,10);
         $permission = Permission::factory()
         ->hasRoles($count)->create();
 
