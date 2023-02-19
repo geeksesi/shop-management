@@ -19,5 +19,9 @@ class BlogPostTest extends TestCase
         $this->assertInstanceOf(BlogComment::class, $post->comments()->first());
         $this->assertEquals(2, $post->comments()->count());
     }
+    public function test_example()
+    {
+        $this->assertTrue(true);
+    }
 
 }
