@@ -6,6 +6,7 @@ use App\Jobs\SoftDeleteOrder;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Product_order;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
@@ -13,16 +14,28 @@ class OrderService
 
     public static function store($data, $products_id_quantity){
 
-        DB::transaction(function () use ($data, $products_id_quantity) {
+        DB::beginTransaction();
+        try{
             $order = Order::create($data);
+
             foreach ($products_id_quantity as $product_id_quantity){
                 $order->products()->attach($product_id_quantity['product_id']
                     , ['quantity'=> $product_id_quantity['quantity']]);
             }
-            OrderService::subtractStock($order); ##move to observer
-            SoftDeleteOrder::dispatch($order, $products_id_quantity)->delay(now()->addSeconds(15));
-        });
 
+            if(!OrderService::subtractStock($order)){
+                DB::rollback();
+                return response()->json(['Not enough quantity of product available'], 400);
+            }
+
+            SoftDeleteOrder::dispatch($order, $products_id_quantity)->delay(now()->addSeconds(15));
+            DB::commit();
+            return response('Order Stored.', 200);
+
+        } catch (Exception $e){
+            DB::rollback();
+            return response()->json($e->getMessage(), 500);
+        }
     }
     public static function addStock(Order $order){
 
@@ -42,18 +55,24 @@ class OrderService
     public static function subtractStock(Order $order){
 
 
-
         $products_id_quantity = Product_order::select('product_id', 'quantity')
-            ->where('order_id', $order->id)
-            ->get()->toArray();
-
-        $products = $order->products();
-        $products->each(function ($item, $key) use ($products_id_quantity){
-            $item->quantity -= $products_id_quantity[$key]['quantity'];
-            $item->save();
-        });
+                                                ->where('order_id', $order->id)
+                                                ->lockForUpdate()
+                                                ->get()->toArray();
 
 
+        $products = $order->products;
+        $could_subtract = True;
+        for ($key = 0; $key < count($products); $key++){
+            if ($products[$key]->quantity < $products_id_quantity[$key]['quantity']){
+                $could_subtract = false;
+                break;
+            }
+            $products[$key]->quantity -= $products_id_quantity[$key]['quantity'];
+            $products[$key]->save();
+        }
+
+        return $could_subtract;
     }
 
 

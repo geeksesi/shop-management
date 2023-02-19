@@ -20,12 +20,7 @@ class OrderController extends Controller
         $data['user_id'] = auth()->user()->id;
         $data['price'] = OrderService::calculate_price($products_id_quantity);
 
-        if (!OrderService::all_products_has_stock($products_id_quantity)){
-            return response('A Product is not available!', 400);
-        }
-        OrderService::store($data, $products_id_quantity);
-
-        return response(status: 200);
+        return OrderService::store($data, $products_id_quantity);
     }
 
     public function check(Order $order){

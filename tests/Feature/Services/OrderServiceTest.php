@@ -58,7 +58,7 @@ class OrderServiceTest extends TestCase
     public function testAddStock()
     {
 
-        OrderService::addStock($this->order, $this->order_products_id_and_quantity);
+        OrderService::addStock($this->order);
 
         $this->get_quantity_after();
         $products = $this->get_order_products();
@@ -75,7 +75,7 @@ class OrderServiceTest extends TestCase
     public function testSubtractStock()
     {
 
-        OrderService::subtractStock($this->order, $this->order_products_id_and_quantity);
+        OrderService::subtractStock($this->order);
 
         $this->get_quantity_after();
         $products = $this->get_order_products();
