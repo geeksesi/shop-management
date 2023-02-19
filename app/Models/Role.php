@@ -23,4 +23,9 @@ class Role extends Model
         return $this->belongsToMany(Permission::class);
     }
 
+    public static function findByName($role_name)
+    {
+        return self::where('name','Like',$role_name)->first();
+    }
+
 }

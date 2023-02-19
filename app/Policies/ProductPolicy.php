@@ -44,7 +44,8 @@ class ProductPolicy
      */
     public function create(User $user)
     {
-        return ($user->roles->name == RoleEnum::SUPER_ADMIN  || $user->roles->name == RoleEnum::ADMIN) ? Response::allow() : Response::deny('the product can not be created by you!');
+        return $user->tokenCan('Create Products');
+        /*return ($user->roles->name == RoleEnum::SUPER_ADMIN  || $user->roles->name == RoleEnum::ADMIN) ? Response::allow() : Response::deny('the product can not be created by you!');*/
     }
 
     /**
@@ -56,7 +57,8 @@ class ProductPolicy
      */
     public function update(User $user, Product $product)
     {
-        return $product->creator_id == $user->id ? Response::allow() : Response::deny('the product can not edited by you!');
+        return $user->tokenCan('Edit Products');
+        /*return $product->creator_id == $user->id ? Response::allow() : Response::deny('the product can not edited by you!');*/
     }
 
     /**
@@ -68,7 +70,7 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product)
     {
-        //
+        return $user->tokenCan('Delete Products');
     }
 
     /**
