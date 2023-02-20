@@ -38,4 +38,14 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Product::class, 'product_order')->withTimestamps();
+    }
+
+    public function product_orders(){
+        return $this->hasMany(Product_order::class);
+    }
+
+
 }

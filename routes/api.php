@@ -35,6 +35,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)->only([
         'store', 'update', 'destroy'
     ])->name('products.store', 'products.update', 'products.destroy');
+
+
+    Route::post('orders', [\App\Http\Controllers\API\OrderController::class, 'store'])
+        ->name('orders.store');
+
+
+    Route::get('orders/check/{order}', [\App\Http\Controllers\API\OrderController::class, 'check'])
+        ->name('orders.check');
+
+
 });
 
 /*---------------category------------*/

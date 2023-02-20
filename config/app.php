@@ -212,4 +212,7 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'TELEGRAM_BOT_TOKEN' => env('TELEGRAM_BOT_TOKEN', '12345'),
+
+    'TELEGRAM_RECEIVER_ID' => env('TELEGRAM_RECEIVER_ID', '12345')
 ];

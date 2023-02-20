@@ -14,8 +14,8 @@ class TelegramService
 
     public function __construct()
     {
-        $this->token = env("TELEGRAM_BOT_TOKEN");
-        $this->chat_id = env('TELEGRAM_RECEIVER_ID');
+        $this->token = config('app.TELEGRAM_BOT_TOKEN');
+        $this->chat_id = config('app.TELEGRAM_RECEIVER_ID');
     }
 
     /**

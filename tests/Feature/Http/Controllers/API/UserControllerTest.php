@@ -5,12 +5,21 @@ namespace Tests\Feature\Http\Controllers\API;
 use Database\Factories\UserFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
 {
     use WithFaker;
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutMiddleware(
+            ThrottleRequests::class
+        );
+    }
 
     public function testAsGuestItShouldBeAbleToRegisterWithCorrectInputs()
     {
