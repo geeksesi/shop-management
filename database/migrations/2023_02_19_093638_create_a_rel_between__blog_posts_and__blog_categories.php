@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('BlogCategories_BlogPosts', function (Blueprint $table) {
             $table->unsignedBigInteger('BlogPost_id');
-            $table->foreign('BlogPost_id')->references('id')->on('BlogPosts')->onDelete('cascade');
+            $table->foreign('BlogPost_id')->references('id')->on('blog_posts')->onDelete('cascade');
 
             $table->unsignedBigInteger('BlogCategory_id');
-            $table->foreign('BlogCategory_id')->references('id')->on('BlogCategories')->onDelete('cascade');
+            $table->foreign('BlogCategory_id')->references('id')->on('blog_categories')->onDelete('cascade');
 
             $table->unique(['BlogPost_id' , 'BlogCategory_id']);
         });

@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('BlogComments', function (Blueprint $table) {
+        Schema::create('blog_comments', function (Blueprint $table) {
             $table->id()->nullable();
             $table->unsignedBigInteger('BlogPost_id');
-            $table->foreign('BlogPost_id')->references('id')->on('BlogPosts')->onDelete('cascade');
+            $table->foreign('BlogPost_id')->references('id')->on('blog_posts')->onDelete('cascade');
             $table->timestamps();
             $table->text("description");
             $table->string("author_name")->nullable()->comment("if not logged in");
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('BlogComments');
+        Schema::dropIfExists('blog_comments');
     }
 };
