@@ -29,8 +29,12 @@ class UserController extends Controller
     {
         $credentials = $request->validated();
         $user = User::where("username", $credentials["username"])->first();
+        if (!$user){
+            return response('not found user', 404);
+        }
+
         if ($user->roles){
-            $permissions = $this->getPermissions($user->roles);
+            $permissions = $user->getPermissions($user->roles);
             $token = $user->createToken($user->roles()->first()->name,$permissions);
             return AuthenticationResource::make($token);
         }
@@ -44,15 +48,5 @@ class UserController extends Controller
 
     }
 
-    public function getPermissions(object $roles) :array
-    {
-        $permissionArray = [];
-        foreach ($roles as $role){
-            $permissions= $role->permissions;
-            foreach($permissions as $permission){
-                $permissionArray[] = $permission->name;
-            }
-        }
-        return $permissionArray;
-    }
+
 }
