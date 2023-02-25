@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/permissions/assign/roles',[App\Http\Controllers\API\RolePermissionController::class,'assignPermissionToRole']);
+Route::post('/roles/assign/users',[App\Http\Controllers\API\RolePermissionController::class,'assignRoleToUser']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -24,7 +26,7 @@ Route::post('user/login', [App\Http\Controllers\API\UserController::class, 'logi
     ->middleware('throttle:login');
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
 
     /*---------------category------------*/
     Route::apiResource("/categories", \App\Http\Controllers\API\CategoryController::class)

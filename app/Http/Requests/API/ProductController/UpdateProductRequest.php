@@ -3,6 +3,7 @@
 namespace App\Http\Requests\API\ProductController;
 
 use App\Enums\ProductTypeEnum;
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -15,7 +16,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->can('update',[Product::class,$this->product]);
     }
 
     /**

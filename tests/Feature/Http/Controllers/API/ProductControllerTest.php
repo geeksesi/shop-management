@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Http\Controllers\API;
 
-use App\Enums\ProductTypeEnum;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;

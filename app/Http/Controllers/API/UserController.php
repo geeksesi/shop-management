@@ -29,6 +29,15 @@ class UserController extends Controller
     {
         $credentials = $request->validated();
         $user = User::where("username", $credentials["username"])->first();
+        if (!$user){
+            return response('not found user', 404);
+        }
+
+        if ($user->roles){
+            $permissions = $user->getPermissions($user->roles);
+            $token = $user->createToken($user->roles()->first()->name,$permissions);
+            return AuthenticationResource::make($token);
+        }
 
         if (Auth::attempt($credentials)){
             $token = $user->createToken('api_token');
@@ -38,4 +47,6 @@ class UserController extends Controller
         throw new AuthenticationException();
 
     }
+
+
 }

@@ -49,4 +49,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(Product::class, 'creator_id');
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function getPermissions(object $roles) :array
+    {
+        $permissionArray = [];
+        foreach ($roles as $role){
+            $permissions= $role->permissions;
+            foreach($permissions as $permission){
+                $permissionArray[] = $permission->name;
+            }
+        }
+        return $permissionArray;
+    }
 }
